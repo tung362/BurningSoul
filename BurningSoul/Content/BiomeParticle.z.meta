@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BiomeParticle",
+		uint64 ResourceId = 55f1648055e00054,
+	},
+},

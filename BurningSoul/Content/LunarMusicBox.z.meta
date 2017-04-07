@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "LunarMusicBox",
+		uint64 ResourceId = 55f35787c30d239f,
+	},
+},

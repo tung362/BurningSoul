@@ -1,0 +1,24 @@
+class Drops : ZilchComponent
+{
+    var Rand : Random = Random();
+    var JumpTimer : Real = 0;
+    var JumpDelay : Real = 1;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Owner.RigidBody.Velocity = Real3(1, 0, 0) * this.Rand.Range(-4, 4);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.JumpTimer += event.Dt;
+        if(this.JumpTimer > this.JumpDelay)
+        {
+            this.Owner.RigidBody.ApplyLinearImpulse(Real3(0, 1, 0) * 3);
+            this.JumpDelay = this.Rand.Range(1, 1.5);
+            this.JumpTimer = 0;
+        }
+    }
+}

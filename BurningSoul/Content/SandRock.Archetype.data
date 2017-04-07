@@ -1,0 +1,47 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SandRock",
+	},
+	Archetyped = 
+	{
+		string Name = "55f3e27518b1a752:SandRock",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-21.6261, -42.3899, -0.001],
+		Vec3 Scale = [5, 5, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [0.94, 0.94, 0.94, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "55f3ec615dd8e877:SandRock1",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool OnTop = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	TerrainDeco = 
+	{
+		bool IsNotSingle = true,
+		string Deco1 = "55f3ec615dd8e877:SandRock1",
+		string Deco2 = "55f3ec7b2217bb80:SandRock2",
+		string Deco3 = "55f3ec722093ff58:SandRock3",
+	},
+},

@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "StarterHpMpDisplay",
+		uint64 ResourceId = 55f0db9eb296e8a3,
+	},
+},

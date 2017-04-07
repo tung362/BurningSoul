@@ -1,0 +1,21 @@
+class TimedDestroy : ZilchComponent
+{
+    var Timer : Real = 0;
+    [Property]
+    var Delay : Real = 0.5;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer += event.Dt;
+        
+        if(this.Timer > this.Delay)
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

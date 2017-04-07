@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SnowMusicBox",
+		uint64 ResourceId = 55f35798c0614d0b,
+	},
+},

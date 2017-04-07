@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MapHillGenerator",
+		uint64 ResourceId = 55e747c142db3a3c,
+	},
+},

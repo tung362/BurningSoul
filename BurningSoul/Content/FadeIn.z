@@ -1,0 +1,72 @@
+class FadeIn : ZilchComponent
+{
+    var Speed : Real = 0.3;
+    
+    [Property]
+    var IsMainMenu : Boolean = false;
+    
+    [Property]
+    var ToLevel : Level = null;
+    [Property]
+    var ToLevel2 : Level = null;
+    [Property]
+    var ToLevel3 : Level = null;
+    [Property]
+    var ToLevel4 : Level = null;
+    
+    [Property]
+    var MainMenu : Level = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var tracker = this.Space.FindObjectByName("LevelTracker");
+        var objectColor = this.Owner.Sprite.Color;
+        
+        if(tracker.LevelTracker.StartFadeIn == true)
+        {
+            //X = R
+            //Y = G
+            //Z = B
+            //W = A
+            if(objectColor.W < 0.98)
+            {
+                this.Owner.Sprite.Color += Real4(0, 0, 0, this.Speed) * event.Dt;
+            }
+            
+            if(objectColor.W >= 0.98)
+            {
+                this.Owner.Sprite.Color = Real4(1, 1, 1, 1);
+                
+                if(this.IsMainMenu == false)
+                {
+                    //1 = Forest, 2 = Tundra, 3 = Desert, 4 = Lunar
+                    if(tracker.LevelTracker.DoorBiomeType == 1)
+                    {
+                        this.Space.LoadLevel(this.ToLevel);
+                    }
+                    else if(tracker.LevelTracker.DoorBiomeType == 2)
+                    {
+                        this.Space.LoadLevel(this.ToLevel2);
+                    }
+                    else if(tracker.LevelTracker.DoorBiomeType == 3)
+                    {
+                        this.Space.LoadLevel(this.ToLevel3);
+                    }
+                    else if(tracker.LevelTracker.DoorBiomeType == 4)
+                    {
+                        this.Space.LoadLevel(this.ToLevel4);
+                    }
+                }
+                else
+                {
+                    this.Space.LoadLevel(this.MainMenu);
+                }
+            }
+        }
+    }
+}

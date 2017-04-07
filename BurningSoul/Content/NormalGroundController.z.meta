@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "NormalGroundController",
+		uint64 ResourceId = 55dfb08d4b355f74,
+	},
+},

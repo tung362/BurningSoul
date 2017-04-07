@@ -1,0 +1,111 @@
+class MapPlatformGenerator : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    //For Hill Generator to start generating
+    var FinishedGeneration : Boolean = false;
+    
+    //Prevents 2 platforms being on top of one another
+    var NewLocation : Real = 0;
+    
+    //Stuff to spawn
+    [Property]
+    var PlatformGrass : Archetype = null;
+    [Property]
+    var PlatformLeftGrassEnd : Archetype = null;
+    [Property]
+    var PlatformRightGrassEnd : Archetype = null;
+    
+    var PreviousSpawnedObject : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        //X
+        var minPlatformXPos : Real = this.Owner.Transform.Translation.X + 5.57;
+        //Find Max
+        var mapXActualSize : Real = this.Space.Global.MapSizeX * 5.57;
+        var generatorXPosAdjustedMax : Real = this.Owner.Transform.Translation.X + mapXActualSize;
+        var maxPlatformActualSize : Real = 8 * 5.57; //5 = max platform length
+        var theMaxPossibleXPos : Real = generatorXPosAdjustedMax - maxPlatformActualSize;
+        //Console.WriteLine("Min X Spawn: `minPlatformXPos`");
+        //Console.WriteLine("Max X Spawn: `theMaxPossibleXPos`");
+        
+        //Y
+        var minPlatformYPos : Real = this.Owner.Transform.Translation.X + (5.57 * 1);
+        //Find Max X
+        var mapYActualSize : Real = this.Space.Global.MapSizeY * 5.57;
+        var generatorYPosAdjustedMax : Real = this.Owner.Transform.Translation.Y + mapYActualSize;
+        var theMaxPossibleYPos : Real = generatorYPosAdjustedMax - (2 * 5.57);
+        //Console.WriteLine("Min Y Spawn: `minPlatformYPos`");
+        //Console.WriteLine("Max Y Spawn: `theMaxPossibleYPos`");
+        
+        for( var i : Integer = 0; i < this.Space.Global.MapPlatforms; ++i)
+        {
+            //var randomX : Real = this.Rand.Range(minPlatformXPos, theMaxPossibleXPos);
+            var randomY : Real = this.Rand.Range(0, this.Space.Global.MapSizeY - 1);
+            var roundedY = Math.Ceil(randomY);
+            var convertedY = roundedY * 5.57;
+            //Console.WriteLine("Random X Spawn: `randomX`");
+            //Console.WriteLine("Random Y Spawn: `randomY`");
+            
+            var randomPlatformNumber = this.Rand.RangeInclusiveMax(3, 5);
+            
+            for( var j : Integer = 0; j < randomPlatformNumber; ++j)
+            {
+                var randomX = this.Rand.DieRoll(4);
+                var nextSpawnPos = randomX * 5.57;
+                
+                if(this.NewLocation >= theMaxPossibleXPos)
+                {
+                    //Console.WriteLine("Boop");
+                    this.FinishedGeneration = true;
+                    break;
+                }
+                
+                //First time spawning
+                if(this.PreviousSpawnedObject == null)
+                {
+                    var objectPos = this.Owner.Transform.Translation;
+                    var structure = this.Space.CreateAtPosition( this.PlatformGrass, Real3(objectPos.X + nextSpawnPos + this.NewLocation + (5.57 * 2), objectPos.Y + convertedY, -0.002));
+                    structure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                    //End Object
+                    var structure2 = this.Space.CreateAtPosition( this.PlatformLeftGrassEnd, Real3(objectPos.X + nextSpawnPos + this.NewLocation + 5.57, objectPos.Y + convertedY, -0.002));
+                    structure2.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                    this.PreviousSpawnedObject = structure;
+                }
+                else
+                {
+                    var objectPos = this.Owner.Transform.Translation;
+                    var prevPos = this.PreviousSpawnedObject.Transform.Translation;
+                    
+                    if(j == randomPlatformNumber - 1)
+                    {
+                        //Console.WriteLine("NULL");
+                        var structure2 = this.Space.CreateAtPosition( this.PlatformRightGrassEnd, Real3(prevPos.X + 5.57, objectPos.Y + convertedY, -0.002));
+                        structure2.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                        this.NewLocation = structure2.Transform.Translation.X;
+                        this.PreviousSpawnedObject = null;
+                    }
+                    else
+                    {
+                        var structure = this.Space.CreateAtPosition( this.PlatformGrass, Real3(prevPos.X + 5.57, objectPos.Y + convertedY, -0.002));
+                        structure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                        this.PreviousSpawnedObject = structure;
+                    }
+                }
+            }
+            
+            if(i == randomPlatformNumber - 1)
+            {
+                //Console.WriteLine("Boop");
+                this.FinishedGeneration = true;
+            }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

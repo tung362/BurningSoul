@@ -1,0 +1,133 @@
+class PlayerController : ZilchComponent
+{
+    var SwingCooldownTimer : Real = 0;
+    
+    [Property]
+    var SwingDelay : Real = 0.5;
+    
+    var CanMove : Boolean = true;
+    
+    var IsRight : Boolean = true;
+    
+    var PlayJumpSound : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var movement = Real3(0.0, 0.0, 0.0);
+        
+        var tracker = this.Space.FindObjectByName("LevelTracker");
+        
+        //Can move again after delay
+        if(this.CanMove == false)
+        {
+            this.SwingCooldownTimer += event.Dt;
+            
+            if(this.SwingCooldownTimer > this.SwingDelay)
+            {
+                this.CanMove = true;
+                this.SwingCooldownTimer = 0;
+            }
+        }
+        
+        //Left
+        if(Zero.Keyboard.KeyIsDown(Keys.A) /*&& this.CanMove == true*/ && tracker.LevelTracker.CanPlay == true)
+        {
+            //if not swinging
+            if(Zero.Keyboard.KeyIsPressed(Keys.O) == false)
+            {
+                //if not kneeling
+                /*if(Zero.Keyboard.KeyIsDown(Keys.S) == false)
+                {
+                    movement.X = -1.0;
+                }*/
+                
+                movement.X = -1.0;
+                
+                if(this.Owner.SweptController.Grounded)
+                {
+                    this.Owner.Sprite.FlipX = true;
+                    this.IsRight = false;
+                }
+            }
+            else
+            {
+                if(this.Owner.SweptController.Grounded && this.Owner.PlayerAnimation.HasSwinged == false)
+                {
+                    movement.X = 0;
+                    this.Owner.RigidBody.Velocity = Real3(0, 0, 0);
+                    this.CanMove = false;
+                }
+            }
+        }
+        
+        //Right
+        if(Zero.Keyboard.KeyIsDown(Keys.D) /*&& this.CanMove == true*/ && tracker.LevelTracker.CanPlay == true)
+        {
+            //if not swinging
+            if(Zero.Keyboard.KeyIsPressed(Keys.O) == false)
+            {
+                /*if(Zero.Keyboard.KeyIsDown(Keys.S) == false)
+                {
+                    movement.X = 1.0;
+                }*/
+                
+                movement.X = 1.0;
+                
+                if(this.Owner.SweptController.Grounded)
+                {
+                    this.Owner.Sprite.FlipX = false;
+                    this.IsRight = true;
+                }
+            }
+            else
+            {
+                if(this.Owner.SweptController.Grounded && this.Owner.PlayerAnimation.HasSwinged == false)
+                {
+                    movement.X = 0;
+                    this.Owner.RigidBody.Velocity = Real3(0, 0, 0);
+                    this.CanMove = false;
+                }
+            }
+        }
+        
+        if(this.Owner.SweptController.Grounded == false)
+        {
+            if(Zero.Keyboard.KeyIsDown(Keys.D))
+            {
+                movement.X = 1.0;
+            }
+            
+            if(Zero.Keyboard.KeyIsDown(Keys.A))
+            {
+                movement.X = -1.0;
+            }
+        }
+        
+        //Jump
+        if(Zero.Keyboard.KeyIsPressed(Keys.Space) && tracker.LevelTracker.CanPlay == true)
+        {
+            this.Owner.SweptController.Jump();
+            
+            /*if(this.PlayJumpSound == true)
+            {
+                this.Owner.SoundEmitter.Cue = SoundCue.Find("SedrickJump");
+                this.Owner.SoundEmitter.Volume = 0.1;
+                this.Owner.SoundEmitter.Play();
+                this.PlayJumpSound = false;
+            }*/
+        }
+        /*else
+        {
+            if(this.PlayJumpSound == false && this.Owner.TungMovement.Grounded)
+            {
+                this.PlayJumpSound = true;
+            }
+        }*/
+        this.Owner.SweptController.Update(movement, event.Dt);
+    }
+}

@@ -1,0 +1,45 @@
+class Grass : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    var Type : Integer = 1;
+    
+    var Timer : Real = 0;
+    
+    [Property]
+    var Sprite1 : SpriteSource = null;
+    [Property]
+    var Sprite2 : SpriteSource = null;
+    [Property]
+    var Sprite3 : SpriteSource = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.Owner.Name = "Grass";
+        this.Type = this.Rand.DieRoll(3);
+        
+        if(this.Type == 1)
+        {
+            this.Owner.Sprite.SpriteSource = this.Sprite1;
+        }
+        else if (this.Type == 2)
+        {
+            this.Owner.Sprite.SpriteSource = this.Sprite2;
+        }
+        else if (this.Type == 3)
+        {
+            this.Owner.Sprite.SpriteSource = this.Sprite3;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.Timer += event.Dt;
+        
+        if(this.Timer > 0.2)
+        {
+            this.Owner.RemoveComponentByName("Grass");
+        }
+    }
+}

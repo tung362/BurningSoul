@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "Hammer",
+		uint64 ResourceId = 55f3ae296023efea,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 13,
+		uint FrameSizeY = 7,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333,
+		float OriginX = 6,
+		float OriginY = 3,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

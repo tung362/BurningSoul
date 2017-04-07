@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "ExpBar",
+		uint64 ResourceId = 55f6ab7051092202,
+	},
+},

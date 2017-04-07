@@ -1,0 +1,50 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "DecoDestroyer",
+	},
+	Archetyped = 
+	{
+		string Name = "55d926e066d83bdd:DecoDestroyer",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [20.5372, -79.7729, -0.001],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	DecoDestroyer = 
+	{
+	},
+	RigidBody = 
+	{
+		bool Static = false,
+		bool Asleep = false,
+		bool Kinematic = true,
+		bool RotationLocked = false,
+		bool Mode2D = true,
+		bool AllowSleep = false,
+		bool Inherit2DMode = true,
+		Vec3 Velocity = [0, 0, 0],
+		Vec3 AngularVelocity = [0, 0, 0],
+	},
+	BoxCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "55ef9d7927ee1f3c:NoDeleteOverride",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Size = [1.75, 1.75, 0.5],
+	},
+	TimedDestroy = 
+	{
+		float Delay = 0.5,
+	},
+},

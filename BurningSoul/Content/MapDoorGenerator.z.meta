@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MapDoorGenerator",
+		uint64 ResourceId = 55f133dc110f66ba,
+	},
+},

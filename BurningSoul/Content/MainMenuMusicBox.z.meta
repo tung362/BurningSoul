@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MainMenuMusicBox",
+		uint64 ResourceId = 55f356d33fdad84d,
+	},
+},

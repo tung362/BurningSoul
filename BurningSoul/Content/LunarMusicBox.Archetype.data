@@ -1,0 +1,30 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "LunarMusicBox",
+	},
+	Archetyped = 
+	{
+		string Name = "55f357451528f97f:LunarMusicBox",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SoundEmitter = 
+	{
+		bool StartPlaying = false,
+		int ExtraPriority = 0,
+		string CueName = "55dfcbff4c51358f:Lunar2",
+		float Volume = 0,
+		float Pitch = 1,
+		bool Positional = false,
+	},
+},

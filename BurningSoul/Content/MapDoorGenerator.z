@@ -1,0 +1,52 @@
+class MapDoorGenerator : ZilchComponent
+{
+    //Stuff to spawn
+    //1 = Forest, 2 = Tundra, 3 = Desert, 4 = Lunar
+    [Property]
+    var GrassDoor : Archetype = null;
+    [Property]
+    var SnowDoor : Archetype = null;
+    [Property]
+    var DesertDoor : Archetype = null;
+    [Property]
+    var LunarDoor : Archetype = null;
+    
+    var PreviousXSpawnedObject : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        var objectPos = this.Owner.Transform.Translation;
+        var startingPos : Real = (this.Space.Global.MapSizeX * 5.57) - (5.57 * 2);
+        
+        //1 = Forest, 2 = Tundra, 3 = Desert, 4 = Lunar
+        for( var i : Integer = 0; i < 4; ++i) //Number of doors
+        {
+            if(i == 0)
+            {
+                var door = this.Space.CreateAtPosition( this.LunarDoor, Real3(objectPos.X + startingPos, objectPos.Y, -0.0001));
+                this.PreviousXSpawnedObject = door;
+            }
+            if(i == 1)
+            {
+                var door = this.Space.CreateAtPosition( this.DesertDoor, Real3(this.PreviousXSpawnedObject.Transform.Translation.X - 7.13, objectPos.Y, -0.0001));
+                this.PreviousXSpawnedObject = door;
+            }
+            if(i == 2)
+            {
+                var door = this.Space.CreateAtPosition( this.SnowDoor, Real3(this.PreviousXSpawnedObject.Transform.Translation.X - 7.13, objectPos.Y, -0.0001));
+                this.PreviousXSpawnedObject = door;
+            }
+            if(i == 3)
+            {
+                var door = this.Space.CreateAtPosition( this.GrassDoor, Real3(this.PreviousXSpawnedObject.Transform.Translation.X - 7.13, objectPos.Y, -0.0001));
+                this.PreviousXSpawnedObject = door;
+            }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

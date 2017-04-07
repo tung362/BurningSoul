@@ -1,0 +1,127 @@
+class LunarMusicBox : ZilchComponent
+{
+    var RunOnce : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var mainMenuMusicBox = this.Space.FindObjectByName("MainMenuMusicBox");
+        var creditMusicBox = this.Space.FindObjectByName("CreditMusicBox");
+        var lunarMusicBox = this.Space.FindObjectByName("LunarMusicBox");
+        var snowMusicBox = this.Space.FindObjectByName("SnowMusicBox");
+        var sandMusicBox = this.Space.FindObjectByName("SandMusicBox");
+        
+        //The main music
+        var theMain = lunarMusicBox;
+        
+        if(theMain != null)
+        {
+            var volume = theMain.SoundEmitter.Volume;
+            
+            /*if(this.RunOnce == true && theMain.SoundEmitter.Volume <= 0 && this.Space.Global.SoundID3 == false)
+            {
+                theMain.SoundEmitter.Play();
+                theMain.Persistent = true;
+                this.Space.Global.SoundID3 = true;
+                this.RunOnce = false;
+            }*/
+            
+            if(volume < 0.58)
+            {
+                theMain.SoundEmitter.Volume += 0.1 * event.Dt;
+            }
+            
+            if(volume >= 0.58)
+            {
+                theMain.SoundEmitter.Volume = 0.6;
+            }
+        }
+        else
+        {
+            var musicBox = this.Space.CreateAtPosition(Archetype.Find("LunarMusicBox"), Real3(0, 0, 0));
+            musicBox.SoundEmitter.Play();
+            musicBox.Persistent = true;
+        }
+        
+        //////////////////////////////
+        
+        if(mainMenuMusicBox != theMain && mainMenuMusicBox != null)
+        {
+            var volume = mainMenuMusicBox.SoundEmitter.Volume;
+            
+            if(volume <= 0.6)
+            {
+                mainMenuMusicBox.SoundEmitter.Volume -= 0.1 * event.Dt;
+            }
+            
+            if(volume <= 0.02)
+            {
+                mainMenuMusicBox.SoundEmitter.Volume = 0;
+            }
+        }
+        
+        if(creditMusicBox != theMain && creditMusicBox != null)
+        {
+            var volume = creditMusicBox.SoundEmitter.Volume;
+            
+            if(volume <= 0.6)
+            {
+                creditMusicBox.SoundEmitter.Volume -= 0.1 * event.Dt;
+            }
+            
+            if(volume <= 0.02)
+            {
+                creditMusicBox.SoundEmitter.Volume = 0;
+            }
+        }
+        
+        if(lunarMusicBox != theMain && lunarMusicBox != null)
+        {
+            var volume = lunarMusicBox.SoundEmitter.Volume;
+            
+            if(volume <= 0.6)
+            {
+                lunarMusicBox.SoundEmitter.Volume -= 0.1 * event.Dt;
+            }
+            
+            if(volume <= 0.02)
+            {
+                lunarMusicBox.SoundEmitter.Volume = 0;
+            }
+        }
+        
+        if(snowMusicBox != theMain && snowMusicBox != null)
+        {
+            var volume = snowMusicBox.SoundEmitter.Volume;
+            
+            if(volume <= 0.6)
+            {
+                snowMusicBox.SoundEmitter.Volume -= 0.1 * event.Dt;
+            }
+            
+            if(volume <= 0.02)
+            {
+                snowMusicBox.SoundEmitter.Volume = 0;
+            }
+        }
+        
+        if(sandMusicBox != theMain && sandMusicBox != null)
+        {
+            var volume = sandMusicBox.SoundEmitter.Volume;
+            
+            if(volume <= 0.6)
+            {
+                sandMusicBox.SoundEmitter.Volume -= 0.1 * event.Dt;
+            }
+            
+            if(volume <= 0.02)
+            {
+                sandMusicBox.SoundEmitter.Volume = 0;
+            }
+        }
+    }
+}

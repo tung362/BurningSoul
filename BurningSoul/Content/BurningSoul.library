@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "BurningSoul",
+	uint64 LibraryId = 55d822dc815f0c33,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

@@ -1,0 +1,150 @@
+class MapGenerator : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    //Which Terrain type to spawn
+    var TerrainType : Integer = 0; //1 to 3
+    
+    //Runs one frame
+    var Start : Boolean = true;
+    var FirstTimeSpawning : Boolean = true;
+    //Generation is done
+    var IsFinished : Boolean = false;
+    
+    //Stages///////////////////////////////////
+    //Stage 1 of generator
+    var CreateFloorCeilingWalls : Boolean = true;
+    //Sub Stages
+    //var CreateLeftWall : Boolean = false;
+    //var CreateTopWall : Boolean = false;
+    //var CreateRightWall : Boolean = false;
+    
+    //Stage 2 of generator
+    //var CreateHills : Boolean = false;
+    //Sub Stages
+    //var CreateHillLeftWall : Boolean = false;
+    //var CreateHillTopWall : Boolean = false;
+    //var CreateHillRightWall : Boolean = false;
+    
+    //Stage 3 of generator
+    //var CreatePlatforms : Boolean = false;
+    
+    ///////////////////////////////////////////
+    
+    //gets the future X axis and if camera reaches that point then spawn something and make a new future point
+    var DistanceForSpawn : Real = 10;
+    var FutureSpawnPoint : Real3 = Real3(0, 0, 0);
+    //If true then spawn is ready to create something
+    var ReachedFutureSpawnPoint : Boolean = false;
+    
+    //gets which building was previously spawned, used to determine distancing of newly spawned objects
+    var PreviouslySpawnedBuildingID : Integer = 0; //1 = building1, 2 = building2, 3 = building3, 4 = building4
+    //Used to place new building next to the pervious building
+    var PreviouslySpawnedCog : Cog = null;
+    //Distance new object spawn from the previous object
+    var SpawnXAway : Real = 0;
+    
+    //Stuff to spawn
+    [Property]
+    var BottomGrass : Archetype = null;
+    [Property]
+    var RightGrass : Archetype = null;
+    [Property]
+    var LeftGrass : Archetype = null;
+    [Property]
+    var TopGrass : Archetype = null;
+    [Property]
+    var BottomRightGrass : Archetype = null;
+    [Property]
+    var BottomLeftGrass : Archetype = null;
+    [Property]
+    var TopRightGrass : Archetype = null;
+    [Property]
+    var TopLeftGrass : Archetype = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Checks to see if something can spawn
+        if(this.PreviouslySpawnedCog != null)
+        {
+            if(this.PreviouslySpawnedCog.Transform.Translation.X <= this.Space.Global.MapSizeX)
+            {
+                if(this.Start == false)
+                {
+                    this.ReachedFutureSpawnPoint = true;
+                }
+            }
+            else
+            {
+                if(this.IsFinished == false)
+                {
+                    var leftWallGenerator = this.Space.FindObjectByName("MapGeneratorLeft");
+                    leftWallGenerator.MapGeneratorLeft.PreviouslySpawnedBuildingID = 1;
+                    leftWallGenerator.MapGeneratorLeft.PreviouslySpawnedCog = this.PreviouslySpawnedCog;
+                    this.Owner.RemoveComponentByName("MapGenerator");
+                    this.IsFinished = true;
+                }
+            }
+        }
+        
+        //Determines distance to use when placing new spawned objects
+        if(this.PreviouslySpawnedCog != null)
+        {
+            if(this.CreateFloorCeilingWalls == true)
+            {
+                //1 = BottomGrass, 2 = BottomLeftGrass, 3 = BottomRightGrass, 4 = Left Grass
+                //5 = Right Grass, 6 = TopLeftGrass, 7 = TopRightGrass, 8 = TopGrass
+                if(this.PreviouslySpawnedBuildingID == 1)
+                {
+                    if(this.TerrainType == 1){this.SpawnXAway = 9.3005;}
+                    else if(this.TerrainType == 2){this.SpawnXAway = -9.3005;}
+                    else if(this.TerrainType == 3){this.SpawnXAway = 9.3005;}
+                }
+                else if(this.PreviouslySpawnedBuildingID == 2)
+                {
+                    if(this.TerrainType == 1){this.SpawnXAway = 9.3005;}
+                    else if(this.TerrainType == 2){this.SpawnXAway = -9.3005;}
+                    else if(this.TerrainType == 3){this.SpawnXAway = 9.3005;}
+                }
+            }
+        }
+        
+        //Start of stage 1
+        if(this.CreateFloorCeilingWalls == true)
+        {
+            if(this.Start == true)
+            {
+                this.TerrainType = 1;
+                this.ReachedFutureSpawnPoint = false;
+                
+                //if first time spawning
+                if(this.FirstTimeSpawning == true)
+                {
+                    var structure = this.Space.CreateAtPosition( this.BottomGrass, Real3(this.Owner.Transform.Translation.X, this.Owner.Transform.Translation.Y, -0.001));
+                    this.PreviouslySpawnedBuildingID = 1;
+                    this.PreviouslySpawnedCog = structure;
+                    this.FirstTimeSpawning = false;
+                }
+                this.Start = false;
+            }
+            else
+            {
+                if(this.ReachedFutureSpawnPoint == true)
+                {
+                    if(this.PreviouslySpawnedCog != null) //second time spawning or more
+                    {
+                        var structure = this.Space.CreateAtPosition( this.BottomGrass, Real3(this.PreviouslySpawnedCog.Transform.Translation.X + this.SpawnXAway, this.Owner.Transform.Translation.Y, -0.001));
+                        this.PreviouslySpawnedBuildingID = 1;
+                        this.PreviouslySpawnedCog = structure;
+                    }
+                    this.Start = true;
+                }
+            }
+        }
+    }
+}

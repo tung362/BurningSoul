@@ -1,0 +1,55 @@
+class MobSpawner : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    var Start : Boolean = true;
+    
+    var Chance : Integer = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var objectPos = this.Owner.Transform.Translation;
+        var tracker = this.Space.FindObjectByName("LevelTracker");
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(player != null)
+        {
+            var playerPos = player.Transform.Translation;
+            
+            var rPos = Real3(objectPos.X, objectPos.Y, 0);
+            var sPos = Real3(playerPos.X, playerPos.Y, 0);
+            var difference = Real3(sPos.X - rPos.X, sPos.Y - rPos.Y, sPos.Z - rPos.Z);
+            var distance = Math.Sqrt(Math.Pow(difference.X, 2) + Math.Pow(difference.Y, 2) + Math.Pow(difference.Z, 2));
+            if(this.Start == true && tracker.LevelTracker.StartDecorating == true && distance > 20)
+            {
+                this.Chance = this.Rand.DieRoll(40);
+                
+                if(this.Chance == 1)
+                {
+                    var mob = this.Space.CreateAtPosition(Archetype.Find("Pig"), Real3(objectPos.X , objectPos.Y + 3.83, 0));
+                }
+                else if(this.Chance == 2)
+                {
+                    var mob = this.Space.CreateAtPosition(Archetype.Find("Warrior"), Real3(objectPos.X , objectPos.Y + 3.83, 0));
+                }
+                else if(this.Chance == 3)
+                {
+                    var mob = this.Space.CreateAtPosition(Archetype.Find("ShadowKnight"), Real3(objectPos.X , objectPos.Y + 3.83, 0));
+                }
+                
+                this.Start = false;
+                this.Owner.RemoveComponentByName("MobSpawner");
+            }
+            
+            if(distance <= 20)
+            {
+                this.Owner.RemoveComponentByName("MobSpawner");
+            }
+        }
+    }
+}

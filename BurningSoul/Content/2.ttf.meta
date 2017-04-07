@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "2",
+		uint64 ResourceId = 55f78e5ad1528301,
+	},
+},

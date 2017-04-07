@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DecorateTreeTerrain",
+		uint64 ResourceId = 55f6e0ad4d1cf654,
+	},
+},

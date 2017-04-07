@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "TreeBase",
+		uint64 ResourceId = 55f4ce29c709aae9,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 179,
+		uint FrameSizeY = 119,
+		uint FrameCount = 1,
+		float FrameDelay = 0.0833333,
+		float OriginX = 89,
+		float OriginY = 59,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

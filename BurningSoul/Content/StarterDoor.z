@@ -1,0 +1,77 @@
+class StarterDoor : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    //1 = Forest, 2 = Tundra, 3 = Desert, 4 = Lunar
+    [Property]
+    var BiomeType : Integer = 1;
+    
+    //[Property]
+    //var TheBiome : Level = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+    
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        
+        if(other.Name == "Player")
+        {
+            var tracker = this.Space.FindObjectByName("LevelTracker");
+            tracker.LevelTracker.DisplayText = true;
+            tracker.LevelTracker.DoorBiomeType = this.BiomeType;
+            tracker.LevelTracker.DisplayTimer = 0;
+            
+            if(Zero.Keyboard.KeyIsPressed(Keys.W))
+            {
+                //Data for next map generators
+                var randMapSizeX = this.Rand.RangeInclusiveMax(80, 150);
+                var randMapSizeY = this.Rand.RangeInclusiveMax(5, 6);
+                this.Space.Global.BiomeType = this.BiomeType;
+                this.Space.Global.MapSizeX = randMapSizeX;
+                this.Space.Global.MapSizeY = randMapSizeY;
+                this.Space.Global.MapPlatforms = Math.Ceil(randMapSizeX * 0.16) + 1;
+                this.Space.Global.MapHills = Math.Ceil(randMapSizeX * 0.1) + 1;
+                
+                Console.WriteLine("X = `this.Space.Global.MapSizeX`");
+                Console.WriteLine("Y = `this.Space.Global.MapSizeY`");
+                Console.WriteLine("MapPlatforms = `this.Space.Global.MapPlatforms`");
+                Console.WriteLine("MapHills = `this.Space.Global.MapHills`");
+                
+                if(this.BiomeType == 1)
+                {
+                    this.Space.Global.MaxHealth = 10;
+                    this.Space.Global.CurrentHealth = 10;
+                    this.Space.Global.MaxMagic = 10;
+                    this.Space.Global.CurrentMagic = 10;
+                }
+                else if(this.BiomeType == 2)
+                {
+                    this.Space.Global.MaxHealth = 18;
+                    this.Space.Global.CurrentHealth = 18;
+                    this.Space.Global.MaxMagic = 5;
+                    this.Space.Global.CurrentMagic = 5;
+                }
+                else if(this.BiomeType == 3)
+                {
+                    this.Space.Global.MaxHealth = 5;
+                    this.Space.Global.CurrentHealth = 5;
+                    this.Space.Global.MaxMagic = 18;
+                    this.Space.Global.CurrentMagic = 18;
+                }
+                
+                tracker.LevelTracker.DoorBiomeType = this.BiomeType;
+                tracker.LevelTracker.StartFadeIn = true;
+                //this.Space.LoadLevel(this.TheBiome);
+            }
+        }
+    }
+}

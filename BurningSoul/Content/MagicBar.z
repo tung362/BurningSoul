@@ -1,0 +1,31 @@
+class MagicBar : ZilchComponent
+{
+    //Starting X position
+    var ObjectX : Real = 0;
+    //Starting scale
+    var FirstScale : Real3 = Real3(0, 0, 0);
+        
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        this.ObjectX = this.Owner.Transform.Translation.X;
+        this.FirstScale = this.Owner.Transform.Scale;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+        var objectPosition = this.Owner.Transform.Translation;
+        
+        //Scale Adjustment
+        var progress = this.Space.Global.CurrentMagic / this.Space.Global.MaxMagic;
+        
+        //Position Adjustment
+        var objectAdjust = (1 - progress) * 1.4;
+        var newPosition = (this.ObjectX - objectAdjust);
+        
+        this.Owner.Transform.Scale = Real3(progress * this.FirstScale.X, 0.8, 1);
+        this.Owner.Transform.Translation = Real3(newPosition, objectPosition.Y, objectPosition.Z);
+        //Console.WriteLine(progress);
+    }
+}

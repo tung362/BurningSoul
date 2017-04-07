@@ -1,0 +1,200 @@
+class Global : ZilchComponent
+{
+    //Trigger Increased Skills
+    var LeveledUp : Boolean = false;
+    
+    //Bars
+    var MaxHealth : Real = 10;
+    var CurrentHealth : Real = 10;
+    var MaxMagic : Real = 10;
+    var CurrentMagic : Real = 10;
+    
+    //Potions
+    var MaxHealthPotionNum : Integer = 4;
+    var CurrentHealthPotionNum : Integer = 0;
+    var MaxMagicPotionNum : Integer = 4;
+    var CurrentMagicPotionNum : Integer = 0;
+    
+    //Leveling
+    var CurrentLevel : Integer = 0;
+    var SkillPoint : Integer = 0;
+    var MaxExp : Real = 100;
+    var CurrentExp : Real = 0;
+    
+    //Which Weapon the player is holding
+    var HeldWepID : Integer = 1; //0 = nothing, 1 = Stick, 2 = Sword, 3 = Axe, 4 = Hammer
+    
+    //0 = No Skill Equiped
+    var SkillSlot1 : Integer = 0;
+    var SkillSlot2 : Integer = 0;
+    var SkillSlot3 : Integer = 0;
+    var SkillSlot4 : Integer = 0;
+    var SkillSlot5 : Integer = 0;
+    var SkillSlot6 : Integer = 0;
+    var SkillSlot7 : Integer = 0;
+    var SkillSlot8 : Integer = 0;
+    var SkillSlot9 : Integer = 0;
+    var SkillSlot0 : Integer = 0;
+    
+    //Biome Type, Used to determine which biome the generator should create
+    var BiomeType : Integer = 1; //1 = Forest, 2 = Tundra, 3 = Desert, 4 = Lunar
+    //Determines how big the map is (Measured by X, generates from 0 to MapSize)
+    var MapSizeX : Real = 5; //Default = 20, Min = 20, Max = 50
+    //Determines how big the map is (Measured by Y, generates from 0 to MapSize)
+    var MapSizeY : Real = 3; //Default = 5, Min = 5, Max = 6
+    //Determines how many platforms there are on the map
+    var MapPlatforms : Real = 0; //Min = 2, Max = 3
+    //Determines how many hills there are on the map
+    var MapHills : Real = 0; //Min = 2, Max = 3
+    
+    //Regen
+    var MagicRegenTimer : Real = 0;
+    var MagicRegenDelay : Real = 2;
+    
+    //Lose
+    var RunOnce : Boolean = true;
+    var IsDead : Boolean = false;
+    var LoseTimer : Real = 0;
+    var LoseDelay : Real = 4;
+    
+    [Property]
+    var MainMenu : Level = null;
+    [Property]
+    var Lose : Level = null;
+    
+    var PlayLevelupSound : Boolean = false;
+    var PlayItemUsed : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.GameSession, Events.GameRequestQuit, this.OnGameRequestQuit);
+    }
+
+    function OnGameRequestQuit(event : GameEvent)
+    {
+        event.Handled = true;
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //TEST
+        /*if(Zero.Keyboard.KeyIsPressed(Keys.B))
+        {
+            this.CurrentHealth -= 1;
+        }
+        if(Zero.Keyboard.KeyIsPressed(Keys.N))
+        {
+            this.CurrentMagic -= 1;
+        }
+        if(Zero.Keyboard.KeyIsPressed(Keys.M))
+        {
+            this.CurrentExp += 10;
+        }*/
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.R))
+        {
+            if(this.CurrentHealthPotionNum > 0)
+            {
+                this.PlayItemUsed = true;
+                this.CurrentHealth += 5;
+                this.CurrentHealthPotionNum -= 1;
+            }
+        }
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.F))
+        {
+            if(this.CurrentMagicPotionNum > 0)
+            {
+                this.PlayItemUsed = true;
+                this.CurrentMagic += 5;
+                this.CurrentMagicPotionNum -= 1;
+            }
+        }
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.Home))
+        {
+            this.Space.ReloadLevel();
+        }
+        
+        if(Zero.Keyboard.KeyIsPressed(Keys.Escape))
+        {
+            this.Space.LoadLevel(this.MainMenu);
+        }
+        
+        //Level Up Trigger
+        if(this.CurrentExp >= this.MaxExp)
+        {
+            this.LeveledUp = true;
+        }
+        
+        //Leveled Up
+        if(this.LeveledUp == true)
+        {
+            this.MaxHealth += 2;
+            this.CurrentHealth += 2;
+            this.MaxMagic += 2;
+            this.CurrentMagic += 2;
+            this.MaxHealthPotionNum += 1;
+            this.MaxMagicPotionNum += 1;
+            this.CurrentLevel += 1;
+            this.MaxExp = this.MaxExp * 1.5;
+            this.CurrentExp = 0;
+            this.PlayLevelupSound = true;
+            this.LeveledUp = false;
+        }
+        
+        //Corrections
+        if(this.CurrentHealth > this.MaxHealth)
+        {
+            this.CurrentHealth = this.MaxHealth;
+        }
+        
+        if(this.CurrentMagic > this.MaxMagic)
+        {
+            this.CurrentMagic = this.MaxMagic;
+        }
+        
+        if(this.CurrentHealthPotionNum > this.MaxHealthPotionNum)
+        {
+            this.CurrentHealthPotionNum = this.MaxHealthPotionNum;
+        }
+        
+        if(this.CurrentMagicPotionNum > this.MaxMagicPotionNum)
+        {
+            this.CurrentMagicPotionNum = this.MaxMagicPotionNum;
+        }
+        
+        //Regen
+        if(this.CurrentMagic < this.MaxMagic)
+        {
+            this.MagicRegenTimer += event.Dt;
+            
+            if(this.MagicRegenTimer > this.MagicRegenDelay)
+            {
+                this.CurrentMagic += 1;
+                this.MagicRegenTimer = 0;
+            }
+        }
+        
+        //Lose 
+        //Corrections
+        if(this.CurrentHealth <= 0 && this.RunOnce == true)
+        {
+            this.IsDead = true;
+        }
+        
+        if(this.IsDead == true && this.RunOnce == true)
+        {
+            this.LoseTimer += event.Dt;
+            
+            if(this.LoseTimer > this.LoseDelay)
+            {
+                this.Space.LoadLevel(this.Lose);
+                this.CurrentHealth = 10;
+                this.RunOnce = false;
+                this.LoseTimer = 0;
+            }
+        }
+    }
+}

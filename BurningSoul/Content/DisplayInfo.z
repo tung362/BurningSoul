@@ -1,0 +1,48 @@
+class DisplayInfo : ZilchComponent
+{
+    [Property]
+    var IsLevelText : Boolean = false;
+    [Property]
+    var IsExpText : Boolean = false;
+    [Property]
+    var IsHealthText : Boolean = false;
+    [Property]
+    var IsMagicText : Boolean = false;
+    [Property]
+    var IsPotHealthText : Boolean = false;
+    [Property]
+    var IsPotMagicText : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.IsLevelText == true)
+        {
+            this.Owner.SpriteText.Text = "Level: `this.Space.Global.CurrentLevel`";
+        }
+        else if(this.IsExpText == true)
+        {
+            this.Owner.SpriteText.Text = "`this.Space.Global.CurrentExp`/`this.Space.Global.MaxExp`";
+        }
+        else if(this.IsHealthText == true)
+        {
+            this.Owner.SpriteText.Text = "`this.Space.Global.CurrentHealth`/`this.Space.Global.MaxHealth`";
+        }
+        else if(this.IsMagicText == true)
+        {
+            this.Owner.SpriteText.Text = "`this.Space.Global.CurrentMagic`/`this.Space.Global.MaxMagic`";
+        }
+        else if(this.IsPotHealthText == true)
+        {
+            this.Owner.SpriteText.Text = "`this.Space.Global.CurrentHealthPotionNum`/`this.Space.Global.MaxHealthPotionNum`";
+        }
+        else if(this.IsPotMagicText == true)
+        {
+            this.Owner.SpriteText.Text = "`this.Space.Global.CurrentMagicPotionNum`/`this.Space.Global.MaxMagicPotionNum`";
+        }
+    }
+}

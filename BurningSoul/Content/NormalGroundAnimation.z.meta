@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "NormalGroundAnimation",
+		uint64 ResourceId = 55dfb0bb46ad4801,
+	},
+},

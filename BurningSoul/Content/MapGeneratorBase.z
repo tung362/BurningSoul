@@ -1,0 +1,149 @@
+class MapGeneratorBase : ZilchComponent
+{
+    //For Hill Generator to start generating
+    var FinishedGeneration : Boolean = false;
+    
+    //Stages
+    var GenerateBottom : Boolean = true;
+    var GenerateLeft : Boolean = false;
+    var GenerateTop : Boolean = false;
+    var GenerateRight : Boolean = false;
+    
+    //Stuff to spawn
+    [Property]
+    var BottomGrass : Archetype = null;
+    [Property]
+    var RightGrass : Archetype = null;
+    [Property]
+    var LeftGrass : Archetype = null;
+    [Property]
+    var TopGrass : Archetype = null;
+    [Property]
+    var BottomRightGrass : Archetype = null;
+    [Property]
+    var BottomLeftGrass : Archetype = null;
+    [Property]
+    var TopRightGrass : Archetype = null;
+    [Property]
+    var TopLeftGrass : Archetype = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        //Stage 1
+        if(this.GenerateBottom == true)
+        {
+            for( var i : Integer = 0; i < this.Space.Global.MapSizeX; ++i)
+            {
+                var objectPos = this.Owner.Transform.Translation;
+                var nextSpawnPos : Real = i * 5.57;
+                
+                //First Time Spawn
+                if(i == 0)
+                {
+                    var structure = this.Space.CreateAtPosition( this.BottomGrass, Real3(objectPos.X, objectPos.Y, -0.001));
+                    //LeftEnd
+                    var structure2 = this.Space.CreateAtPosition( this.BottomLeftGrass, Real3(objectPos.X - 5.57, objectPos.Y, -0.001));
+                }
+                else
+                {
+                    var structure = this.Space.CreateAtPosition( this.BottomGrass, Real3(objectPos.X + nextSpawnPos, objectPos.Y, -0.001));
+                    //RightEnd
+                    if(i == this.Space.Global.MapSizeX - 1)
+                    {
+                        var structure2 = this.Space.CreateAtPosition( this.BottomRightGrass, Real3(objectPos.X + nextSpawnPos + 5.57, objectPos.Y, -0.001));
+                        this.GenerateLeft = true; //Start of stage 2
+                        this.GenerateBottom = false;
+                    }
+                }
+            }
+        }
+        //End of Stage 1
+        
+        //Stage 2
+        if(this.GenerateLeft == true)
+        {
+            for( var i : Integer = 0; i < this.Space.Global.MapSizeY; ++i)
+            {
+                var objectPos = this.Owner.Transform.Translation;
+                var nextSpawnPos : Real = i * 5.57;
+                
+                //First Time Spawn
+                if(i > 0)
+                {
+                    var structure = this.Space.CreateAtPosition( this.LeftGrass, Real3(objectPos.X - 5.57, objectPos.Y + nextSpawnPos, -0.001));
+                    //RightEnd
+                    if(i == this.Space.Global.MapSizeY - 1)
+                    {
+                        var structure2 = this.Space.CreateAtPosition( this.TopLeftGrass, Real3(objectPos.X - 5.57, objectPos.Y + nextSpawnPos + 5.57, -0.001));
+                        this.GenerateTop = true; //Start of stage 3
+                        this.GenerateLeft = false;
+                    }
+                }
+            }
+        }
+        //End of Stage 2
+        
+        //Stage 3
+        if(this.GenerateTop == true)
+        {
+            for( var i : Integer = 0; i < this.Space.Global.MapSizeX; ++i)
+            {
+                var objectPos = this.Owner.Transform.Translation;
+                var startSpawnPos : Real = this.Space.Global.MapSizeY * 5.57;
+                var nextSpawnPos : Real = i * 5.57;
+                
+                //First Time Spawn
+                if(i > 0)
+                {
+                    var structure = this.Space.CreateAtPosition( this.TopGrass, Real3(objectPos.X + nextSpawnPos, objectPos.Y + startSpawnPos, -0.001));
+                    //RightEnd
+                    if(i == this.Space.Global.MapSizeX - 1)
+                    {
+                        var structure2 = this.Space.CreateAtPosition( this.TopRightGrass, Real3(objectPos.X + nextSpawnPos + 5.57, objectPos.Y + startSpawnPos, -0.001));
+                        this.GenerateRight = true; //Start of stage 4
+                        this.GenerateTop = false;
+                    }
+                }
+                //Start of spawn
+                else
+                {
+                    var structure = this.Space.CreateAtPosition( this.TopGrass, Real3(objectPos.X, objectPos.Y + startSpawnPos, -0.001));
+                }
+            }
+        }
+        //End of Stage 3
+        
+        //Stage 4
+        if(this.GenerateRight == true)
+        {
+            for( var i : Integer = 0; i < this.Space.Global.MapSizeY; ++i)
+            {
+                var objectPos = this.Owner.Transform.Translation;
+                var startYSpawnPos : Real = this.Space.Global.MapSizeY * 5.57;
+                var startXSpawnPos : Real = this.Space.Global.MapSizeX * 5.57;
+                var nextSpawnPos : Real = i * 5.57;
+                
+                //First Time Spawn
+                if(i > 0)
+                {
+                    var structure = this.Space.CreateAtPosition( this.RightGrass, Real3(objectPos.X + startXSpawnPos, objectPos.Y + startYSpawnPos - nextSpawnPos, -0.001));
+                    //RightEnd
+                    if(i == this.Space.Global.MapSizeY - 1)
+                    {
+                        //var mapPlatformGenerator = this.Space.FindObjectByName("MapPlatformGenerator");
+                        //mapPlatformGenerator.MapPlatformGenerator.StartSpawning = true; //Finish
+                        this.FinishedGeneration = true;
+                        this.GenerateRight = false;
+                    }
+                }
+            }
+        }
+        //End of Stage 4
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

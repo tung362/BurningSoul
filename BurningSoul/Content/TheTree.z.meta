@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "TheTree",
+		uint64 ResourceId = 55f6e1232ed90e45,
+	},
+},

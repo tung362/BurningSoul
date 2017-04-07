@@ -1,0 +1,44 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "DamageText",
+	},
+	Archetyped = 
+	{
+		string Name = "55dfddeb8c9d4dec:DamageText",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [4.85953, -7.26114, 0.05],
+		Vec3 Scale = [3, 3, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SpriteText = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		TextPositionMode Position = UpperLeft,
+		string FontName = "55f78e5ad153821e:1",
+		uint FontSize = 30,
+		string Text = "5",
+		bool OnTop = false,
+		Vec2 Size = [0, 0],
+		TextAlign Align = Left,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+	},
+	DamageText = 
+	{
+	},
+},

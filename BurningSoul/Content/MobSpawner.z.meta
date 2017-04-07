@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MobSpawner",
+		uint64 ResourceId = 55f2119adcc4923e,
+	},
+},

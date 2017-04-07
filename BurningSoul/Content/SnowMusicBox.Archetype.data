@@ -1,0 +1,30 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SnowMusicBox",
+	},
+	Archetyped = 
+	{
+		string Name = "55f35722e99bf832:SnowMusicBox",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, 0, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SoundEmitter = 
+	{
+		bool StartPlaying = false,
+		int ExtraPriority = 0,
+		string CueName = "55dfcbff4c500fff:Snow2",
+		float Volume = 0,
+		float Pitch = 1,
+		bool Positional = false,
+	},
+},

@@ -1,0 +1,30 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "MainMenuMusicBox",
+	},
+	Archetyped = 
+	{
+		string Name = "55f356c738662788:MainMenuMusicBox",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0.384463, -3.12098, -0.00109863],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SoundEmitter = 
+	{
+		bool StartPlaying = false,
+		int ExtraPriority = 0,
+		string CueName = "55f358c18ba25d2a:MainMenu",
+		float Volume = 0,
+		float Pitch = 1,
+		bool Positional = false,
+	},
+},

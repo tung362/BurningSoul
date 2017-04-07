@@ -1,0 +1,72 @@
+class LevelTracker : ZilchComponent
+{
+    var CanDecorate : Boolean = false; //Start Generating trees
+    var StartDecorating : Boolean = false;
+    
+    //Text when colliding with door
+    var DisplayText : Boolean = false;
+    var DisplayTimer : Real = 0;
+    //Used by the Map Select
+    var DoorBiomeType : Integer = 1;
+    
+    var DisplayTextWeapons : Boolean = false;
+    var DisplayWeaponsTimer : Real = 0;
+    
+    var DecoTimer : Real = 0;
+    
+    var StartFadeIn : Boolean = false;
+    
+    //Lets the player move
+    var CanPlay : Boolean = false;
+    
+    //Cam Shake
+    var ShakeCam : Boolean = false;
+    var ShakeTimer : Real = 0;
+    var ShakeDuration : Real = 0;
+    var ShakePower : Real = 0.1;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.DisplayText == true)
+        {
+            this.DisplayTimer += event.Dt;
+            if(this.DisplayTimer > 0.1)
+            {
+                this.DisplayText = false;
+            }
+        }
+        
+        if(this.DisplayTextWeapons == true)
+        {
+            this.DisplayWeaponsTimer += event.Dt;
+            if(this.DisplayWeaponsTimer > 0.1)
+            {
+                this.DisplayTextWeapons = false;
+            }
+        }
+        
+        if(this.CanDecorate == true)
+        {
+            this.DecoTimer += event.Dt;
+            if(this.DecoTimer > 0.1)
+            {
+                this.StartDecorating = true;
+            }
+        }
+        
+        if(this.ShakeCam == true)
+        {
+            this.ShakeTimer += event.Dt;
+            if(this.ShakeTimer > this.ShakeDuration)
+            {
+                this.ShakeCam = false;
+                this.ShakeTimer = 0;
+            }
+        }
+    }
+}

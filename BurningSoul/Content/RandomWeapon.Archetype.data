@@ -1,0 +1,86 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "RandomWeapon",
+	},
+	Archetyped = 
+	{
+		string Name = "55f3afd225a9f900:RandomWeapon",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-3.54194, -6.87931, 0.0001],
+		Vec3 Scale = [10, 10, 1],
+		Quat Rotation = [0, 0, 0.707107, 0.707107],
+	},
+	Sprite = 
+	{
+		bool Visible = false,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [0.4, 0.4, 0.4, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "55f3ae296023efea:Hammer",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool OnTop = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	BoxCollider = 
+	{
+		bool Ghost = true,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "55e77fe58ffaa571:NoDelete",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Size = [0.25, 0.25, 0.5],
+	},
+	RandomWeapon = 
+	{
+		int Chance = 0,
+		string Stick = "55f3ae8778a39061:Stick",
+		string PlayerIdleStick = "55f6a39c798d90c2:PlayerIdleStick",
+		string PlayerWalkStick = "55e4ce4b71419573:PlayerWalkStick",
+		string PlayerJumpStick = "55e4ced956e705bc:PlayerJumpStick",
+		string PlayerJumpDownStick = "55e4ced754239647:PlayerJumpDownStick",
+		string PlayerSwingStick = "55e49c664e1f3d6b:PlayerWackStick",
+		string PlayerWalkSwingStick = "55f62ba5c91d869b:PlayerWalkWackStick",
+		string PlayerJumpAttackStick = "55f16d95cddada03:PlayerJumpWackStick",
+		string Sword = "55f3ae9e79067dc0:Sword",
+		string PlayerIdleSword = "55f6a3a27d9d509f:PlayerIdleSword",
+		string PlayerWalkSword = "55e4ce527a5202ae:PlayerWalkSword",
+		string PlayerJumpSword = "55e4cee558d47087:PlayerJumpSword",
+		string PlayerJumpDownSword = "55e4cef35e0e7961:PlayerJumpDownSword",
+		string PlayerSwingSword = "55e49bcd8810b384:PlayerWackSword",
+		string PlayerWalkSwingSword = "55f62874dfa00af5:PlayerWalkWackSword",
+		string PlayerJumpAttackSword = "55f16db5d41e59de:PlayerJumpWackSword",
+		string Axe = "55f3ae17638a21c6:Axe",
+		string PlayerIdleAxe = "55f6a2f2b9523acd:PlayerIdleAxe",
+		string PlayerWalkAxe = "55e4d1936991fddf:PlayerWalkAxe",
+		string PlayerJumpAxe = "55e4ce2e48a81eac:PlayerJumpAxe",
+		string PlayerJumpDownAxe = "55e4ce3a4e2b3cc9:PlayerJumpDownAxe",
+		string PlayerSwingAxe = "55e4e2d590f11217:PlayerWackAxe",
+		string PlayerWalkSwingAxe = "55f62bd4fb1f2487:PlayerWalkWackAxe",
+		string PlayerJumpAttackAxe = "55f16dc6ffee8f63:PlayerJumpWackAxe",
+		string Hammer = "55f3ae296023efea:Hammer",
+		string PlayerIdleHammer = "55f6a38c751f8bde:PlayerIdleHammer",
+		string PlayerWalkHammer = "55e4d1a572b2079b:PlayerWalkHammer",
+		string PlayerJumpHammer = "55e4ce364d802de8:PlayerJumpHammer",
+		string PlayerJumpDownHammer = "55e4cecc53c3ee42:PlayerJumpDownHammer",
+		string PlayerSwingHammer = "55f64eac301cb8f8:PlayerWackHammer",
+		string PlayerWalkSwingHammer = "55f62b87c6b987ca:PlayerWalkWackHammer",
+		string PlayerJumpAttackHammer = "55f16dfec4b6d85c:PlayerJumpWackHammer",
+	},
+},

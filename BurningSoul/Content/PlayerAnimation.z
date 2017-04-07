@@ -1,0 +1,447 @@
+class PlayerAnimation : ZilchComponent
+{
+    //Animations
+    [Property]
+    var PlayerIdle : SpriteSource = null;
+    [Property]
+    var PlayerWalk : SpriteSource = null;
+    [Property]
+    var PlayerJump : SpriteSource = null;
+    [Property]
+    var PlayerJumpDown : SpriteSource = null;
+    [Property]
+    var PlayerSwing : SpriteSource = null;
+    [Property]
+    var PlayerWalkSwing : SpriteSource = null;
+    [Property]
+    var PlayerJumpAttack : SpriteSource = null;
+    
+    //Collision Group
+    [Property]
+    var GhostGroup : CollisionGroup = null;
+    [Property]
+    var SolidGroup : CollisionGroup = null;
+    
+    //Swing Delay
+    var SwingStopperTimer : Real = 0;
+    [Property]
+    var SwingStopperDelay : Real = 0.5;
+    var HasSwinged : Boolean = false;
+    
+    //Jump Attack Delay
+    var JSStopperTimer : Real = 0;
+    [Property]
+    var JSStopperDelay : Real = 0.5;
+    var HasJSwinged : Boolean = false;
+    
+    var JumpNum : Integer = 0;
+    
+    var RunOnce : Boolean = true;
+    [Property]
+    var StickDam : Real = 0;
+    [Property]
+    var SwordDam : Real = 0;
+    [Property]
+    var AxeDam : Real = 0;
+    [Property]
+    var HammerDam : Real = 0;
+    
+    var CanPlaySound : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.StickDam = 3;
+        this.SwordDam = 6;
+        this.AxeDam = 8;
+        this.HammerDam = 12;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Find All Child Hit Boxes
+        var playerRightSwing = this.Owner.FindChildByName("PlayerRightSwing");
+        var playerLeftSwing = this.Owner.FindChildByName("PlayerLeftSwing");
+        
+        var tracker = this.Space.FindObjectByName("LevelTracker");
+        
+        //Damage
+        if(this.RunOnce == true || this.Space.Global.PlayLevelupSound == true)
+        {
+            
+            //0 = nothing, 1 = Stick, 2 = Sword, 3 = Axe, 4 = Hammer
+            if(this.Space.Global.HeldWepID == 1)
+            {
+                playerRightSwing.Damage.Damage = this.StickDam + this.Space.Global.CurrentLevel;
+                playerLeftSwing.Damage.Damage = this.StickDam + this.Space.Global.CurrentLevel;
+            }
+            else if(this.Space.Global.HeldWepID == 2)
+            {
+                playerRightSwing.Damage.Damage = this.SwordDam + this.Space.Global.CurrentLevel;
+                playerLeftSwing.Damage.Damage = this.SwordDam + this.Space.Global.CurrentLevel;
+            }
+            else if(this.Space.Global.HeldWepID == 3)
+            {
+                playerRightSwing.Damage.Damage = this.AxeDam + this.Space.Global.CurrentLevel;
+                playerLeftSwing.Damage.Damage = this.AxeDam + this.Space.Global.CurrentLevel;
+            }
+            else if(this.Space.Global.HeldWepID == 4)
+            {
+                playerRightSwing.Damage.Damage = this.HammerDam + this.Space.Global.CurrentLevel;
+                playerLeftSwing.Damage.Damage = this.HammerDam + this.Space.Global.CurrentLevel;
+            }
+            if(this.Space.Global.PlayLevelupSound == true)
+            {
+                this.CanPlaySound = true;
+                if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("Levelup");
+                    this.Owner.SoundEmitter.Volume = 1;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }
+                this.CanPlaySound = true;
+                this.Space.Global.PlayLevelupSound = false;
+            }
+            this.RunOnce = false;
+        }
+        
+        if(this.Space.Global.PlayItemUsed == true)
+        {
+            this.CanPlaySound = true;
+            if(this.CanPlaySound == true)
+            {
+                this.Owner.SoundEmitter.Cue = SoundCue.Find("ItemUsed");
+                this.Owner.SoundEmitter.Volume = 1;
+                this.Owner.SoundEmitter.Play();
+                this.CanPlaySound = false;
+            }
+            this.CanPlaySound = true;
+            this.Space.Global.PlayItemUsed = false;
+        }
+        
+        //Death
+        if(this.Space.Global.CurrentHealth <= 0)
+        {
+            tracker.LevelTracker.CanPlay = false;
+            this.Owner.Sprite.SpriteSource = SpriteSource.Find("PlayerDead");
+        }
+        
+        //Can Swing again after delay
+        if(this.HasSwinged == true)
+        {
+            this.SwingStopperTimer += event.Dt;
+            
+            if(this.SwingStopperTimer > this.SwingStopperDelay)
+            {
+                this.HasSwinged = false;
+                this.SwingStopperTimer = 0;
+            }
+        }
+        
+        //Can Jump Attack again after delay
+        if(this.HasJSwinged == true)
+        {
+            this.JSStopperTimer += event.Dt;
+            
+            if(this.JSStopperTimer > this.JSStopperDelay)
+            {
+                this.HasJSwinged = false;
+                this.JSStopperTimer = 0;
+            }
+        }
+        
+        //Idle
+        if(this.Owner.Sprite.SpriteSource == this.PlayerIdle && tracker.LevelTracker.CanPlay == true)
+        {
+            this.CanPlaySound = true;
+            this.JumpNum = 0;
+            
+            //playerRightSwing.Sprite.Visible = false;
+            //playerLeftSwing.Sprite.Visible = false;
+            
+            playerRightSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+            playerLeftSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+            
+            //Walk
+            if(Zero.Keyboard.KeyIsDown(Keys.A) || Zero.Keyboard.KeyIsDown(Keys.D))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerWalk;
+            }
+            
+            //Jump
+            if(Zero.Keyboard.KeyIsPressed(Keys.Space))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+            
+            //Swing
+            if(Zero.Keyboard.KeyIsPressed(Keys.O) && this.HasSwinged == false)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerSwing;
+            }
+        }
+        
+        //Swing
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerSwing)
+        {
+            this.HasSwinged = true;
+            this.JumpNum = 0;
+            
+            if(this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.SpriteSource.FrameCount - 5)
+            {
+                if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("Attack1");
+                    this.Owner.SoundEmitter.Volume = 1;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }
+                
+                if(this.Owner.PlayerController.IsRight == true)
+                {
+                    //playerRightSwing.Sprite.Visible = true;
+                    playerRightSwing.BoxCollider.CollisionGroup = this.SolidGroup;
+                }
+                else
+                {
+                    //playerLeftSwing.Sprite.Visible = true;
+                    playerLeftSwing.BoxCollider.CollisionGroup = this.SolidGroup;
+                }
+            }
+            
+            //Idle
+            if(this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.SpriteSource.FrameCount - 1)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerIdle;
+            }
+            
+            //Jump
+            if(Zero.Keyboard.KeyIsPressed(Keys.Space))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+        }
+        
+        //Walk Swing
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerWalkSwing)
+        {
+            this.JumpNum = 0;
+            
+            this.HasSwinged = true;
+            
+            if(this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.SpriteSource.FrameCount - 5)
+            {
+                if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("Attack1");
+                    this.Owner.SoundEmitter.Volume = 1;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }
+                
+                if(this.Owner.PlayerController.IsRight == true)
+                {
+                    //playerRightSwing.Sprite.Visible = true;
+                    playerRightSwing.BoxCollider.CollisionGroup = this.SolidGroup;
+                }
+                else
+                {
+                    //playerLeftSwing.Sprite.Visible = true;
+                    playerLeftSwing.BoxCollider.CollisionGroup = this.SolidGroup;
+                }
+            }
+            
+            //Idle
+            if(this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.SpriteSource.FrameCount - 1)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerWalk;
+            }
+            
+            //Jump
+            if(Zero.Keyboard.KeyIsPressed(Keys.Space))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+        }
+        
+        //Walk
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerWalk)
+        {
+            this.CanPlaySound = true;
+            this.JumpNum = 0;
+            
+            //playerRightSwing.Sprite.Visible = false;
+            //playerLeftSwing.Sprite.Visible = false;
+            
+            playerRightSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+            playerLeftSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+            
+            if(Zero.Keyboard.KeyIsDown(Keys.A) == false && Zero.Keyboard.KeyIsDown(Keys.D) == false)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerIdle;
+            }
+            
+            if(Zero.Keyboard.KeyIsPressed(Keys.Space))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+            
+            //Walk Swing
+            if(Zero.Keyboard.KeyIsPressed(Keys.O) && this.HasSwinged == false)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerWalkSwing;
+            }
+        }
+        
+        //Jump
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerJump)
+        {
+            this.CanPlaySound = true;
+            
+            //playerRightSwing.Sprite.Visible = false;
+            //playerLeftSwing.Sprite.Visible = false;
+            
+            playerRightSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+            playerLeftSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+            
+            //Double Jump
+            if(this.JumpNum < 1 && Zero.Keyboard.KeyIsPressed(Keys.Space))
+            {
+                if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("Sfx1");
+                    this.Owner.SoundEmitter.Volume = 1;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }
+                this.CanPlaySound = true;
+                
+                this.Owner.SweptController.JumpUnconditionally();
+                this.JumpNum = 1;
+            }
+            
+            //Idle
+            if(this.Owner.SweptController.Grounded)
+            {
+                /*if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("JumpLand");
+                    this.Owner.SoundEmitter.Volume = 0.8;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }*/
+                
+                this.Owner.Sprite.SpriteSource = this.PlayerIdle;
+            }
+            
+            //Jump Down
+            if(this.Owner.RigidBody.Velocity.Y <= 0)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJumpDown;
+            }
+            
+            //Jump Attack
+            if(Zero.Keyboard.KeyIsPressed(Keys.O) && this.HasJSwinged == false)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJumpAttack;
+            }
+        }
+        
+        //Jump Down
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerJumpDown)
+        {
+            this.CanPlaySound = true;
+            
+            //playerRightSwing.Sprite.Visible = false;
+            //playerLeftSwing.Sprite.Visible = false;
+            
+            playerRightSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+            playerLeftSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+            
+            //Double Jump
+            if(this.JumpNum < 1 && Zero.Keyboard.KeyIsPressed(Keys.Space))
+            {
+                if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("Sfx1");
+                    this.Owner.SoundEmitter.Volume = 1;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }
+                this.CanPlaySound = true;
+                
+                this.Owner.SweptController.JumpUnconditionally();
+                this.JumpNum = 1;
+            }
+            
+            //Idle
+            if(this.Owner.SweptController.Grounded)
+            {
+                /*if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("JumpLand");
+                    this.Owner.SoundEmitter.Volume = 0.8;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }*/
+                
+                this.Owner.Sprite.SpriteSource = this.PlayerIdle;
+            }
+            
+            //Jump
+            if(this.Owner.RigidBody.Velocity.Y > 0)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+            
+            //Jump Attack
+            if(Zero.Keyboard.KeyIsPressed(Keys.O) && this.HasJSwinged == false)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJumpAttack;
+            }
+        }
+        
+        //Jump Attack
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerJumpAttack)
+        {
+            
+            this.HasJSwinged = true;
+            
+            if(this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.SpriteSource.FrameCount - 9)
+            {
+                if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("Attack1");
+                    this.Owner.SoundEmitter.Volume = 1;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }
+                
+                if(this.Owner.PlayerController.IsRight == true)
+                {
+                    //playerRightSwing.Sprite.Visible = true;
+                    playerRightSwing.BoxCollider.CollisionGroup = this.SolidGroup;
+                }
+                else
+                {
+                    //playerLeftSwing.Sprite.Visible = true;
+                    playerLeftSwing.BoxCollider.CollisionGroup = this.SolidGroup;
+                }
+            }
+            
+            //Jump
+            if(this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.SpriteSource.FrameCount - 1)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+            
+            //Idle
+            if(this.Owner.SweptController.Grounded)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerIdle;
+            }
+        }
+    }
+}

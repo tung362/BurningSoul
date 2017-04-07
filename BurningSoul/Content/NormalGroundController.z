@@ -1,0 +1,154 @@
+class NormalGroundController : ZilchComponent
+{
+    var ActivateAI : Boolean = false;
+    
+    [Property]
+    var TriggerDistance : Real = 14.5;
+    [Property]
+    var AttackDistance : Real = 7;
+    
+    var SwingCooldownTimer : Real = 0;
+    [Property]
+    var SwingDelay : Real = 0.5;
+    var CanMove : Boolean = true;
+    var IsRight : Boolean = true;
+    
+    //AI Animation info
+    var Attacking : Boolean = false;
+    var Walking : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        //Random face direction
+        var rand : Random = Random();
+        var randomFacing : Integer = 1;
+        randomFacing = rand.DieRoll(2);
+        
+        if(randomFacing == 1)
+        {
+            this.Owner.Sprite.FlipX = false;
+        }
+        else
+        {
+            this.Owner.Sprite.FlipX = true;
+        }
+        
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var objectPos = this.Owner.Transform.Translation;
+        var player = this.Space.FindObjectByName("Player");
+        var playerPos = player.Transform.Translation;
+        
+        var movement = Real3(0.0, 0.0, 0.0);
+        
+        var rPos = Real3(objectPos.X, objectPos.Y, 0);
+        var sPos = Real3(playerPos.X, playerPos.Y, 0);
+        var difference = Real3(sPos.X - rPos.X, sPos.Y - rPos.Y, sPos.Z - rPos.Z);
+        var distance = Math.Sqrt(Math.Pow(difference.X, 2) + Math.Pow(difference.Y, 2) + Math.Pow(difference.Z, 2));
+        
+        //Start AI
+        if(this.ActivateAI == false && distance <= this.TriggerDistance)
+        {
+            this.ActivateAI = true;
+        }
+        
+        //Stop AI
+        if(this.ActivateAI == true && distance >= 25)
+        {
+            this.Owner.Sprite.SpriteSource = this.Owner.NormalGroundAnimation.PlayerIdle;
+            this.ActivateAI = false;
+        }
+        
+        ///////////////////////////////////////////////////////////////////////////////////////
+        //Start of AI
+        if(this.ActivateAI == true)
+        {
+            
+            //Can move again after delay
+            if(this.CanMove == false)
+            {
+                this.SwingCooldownTimer += event.Dt;
+                
+                if(this.SwingCooldownTimer > this.SwingDelay)
+                {
+                    this.CanMove = true;
+                    this.SwingCooldownTimer = 0;
+                }
+            }
+            
+            //Left
+            if(playerPos.X < objectPos.X && this.CanMove == true && this.Owner.EnemyHealth.Health > 0)
+            {
+                this.Walking = true;
+                
+                //if not attacking
+                if(distance > this.AttackDistance)
+                {
+                    this.Attacking = false;
+                    
+                    if(this.Owner.NormalGroundAnimation.HasSwinged == false)
+                    {
+                        movement.X = -1.0;
+                    }
+                    
+                    if(this.Owner.SweptController.Grounded)
+                    {
+                        this.Owner.Sprite.FlipX = true;
+                        this.IsRight = false;
+                    }
+                }
+                else //Attacking
+                {
+                    this.Attacking = true;
+                    
+                    if(this.Owner.SweptController.Grounded && this.Owner.NormalGroundAnimation.HasSwinged == false)
+                    {
+                        movement.X = 0;
+                        this.Owner.RigidBody.Velocity = Real3(0, 0, 0);
+                        this.CanMove = false;
+                    }
+                }
+            }
+            
+            //Right
+            if(playerPos.X > objectPos.X && this.CanMove == true && this.Owner.EnemyHealth.Health > 0)
+            {
+                this.Walking = true;
+                
+                //if not attacking
+                if(distance > this.AttackDistance)
+                {
+                    this.Attacking = false;
+                    
+                    if(this.Owner.NormalGroundAnimation.HasSwinged == false)
+                    {
+                        movement.X = 1.0;
+                    }
+                    
+                    if(this.Owner.SweptController.Grounded)
+                    {
+                        this.Owner.Sprite.FlipX = false;
+                        this.IsRight = true;
+                    }
+                }
+                else //Attacking
+                {
+                    this.Attacking = true;
+                    
+                    if(this.Owner.SweptController.Grounded && this.Owner.NormalGroundAnimation.HasSwinged == false)
+                    {
+                        movement.X = 0;
+                        this.Owner.RigidBody.Velocity = Real3(0, 0, 0);
+                        this.CanMove = false;
+                    }
+                }
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+        this.Owner.SweptController.Update(movement, event.Dt);
+    }
+}

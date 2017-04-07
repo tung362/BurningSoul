@@ -1,0 +1,30 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "CreditMusicBox",
+	},
+	Archetyped = 
+	{
+		string Name = "55f356c738662788:MainMenuMusicBox",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [1.18331, -1.12387, -0.00109863],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	SoundEmitter = 
+	{
+		bool StartPlaying = false,
+		int ExtraPriority = 0,
+		string CueName = "55f358c08ba07ca1:Credits",
+		float Volume = 0,
+		float Pitch = 1,
+		bool Positional = false,
+	},
+},

@@ -1,0 +1,86 @@
+class LevelButton : ZilchComponent
+{
+    [Property]
+    var TheLevel : Level = null;
+    
+    [Property]
+    var IsPlayButtom : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.MouseEnter, this.OnMouseEnter);
+        Zero.Connect(this.Owner, Events.MouseExit, this.OnMouseExit);
+        Zero.Connect(this.Owner, Events.MouseDown, this.OnMouseDown);
+        Zero.Connect(this.Owner, Events.MouseUp, this.OnMouseUp);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+    
+    function OnMouseUp(event : ViewportMouseEvent)
+    {
+        //Let Go Of Click
+        var tracker = this.Space.FindObjectByName("LevelTracker");
+        var nonBlackScreen = this.Space.FindObjectByName("NonBlackScreen");
+        
+        if(this.IsPlayButtom == true)
+        {
+            this.Space.Global.IsDead = false;
+            this.Space.Global.CurrentHealth = 10;
+            this.Space.Global.RunOnce = true;
+            this.Space.Global.LoseTimer = 0;
+            this.Space.Global.HeldWepID = 0;
+            this.Space.Global.CurrentHealthPotionNum = 0;
+            this.Space.Global.CurrentMagicPotionNum = 0;
+            this.Space.Global.MaxHealthPotionNum = 4;
+            this.Space.Global.MaxMagicPotionNum = 4;
+            this.Space.Global.CurrentLevel = 0;
+            this.Space.Global.CurrentExp = 0;
+            this.Space.Global.MaxExp = 100;
+            this.Space.Global.CurrentLevel = 0;
+            this.Space.Global.MapSizeX = 5;
+            this.Space.Global.MapSizeY = 3;
+            this.Space.Global.MapPlatforms = 0;
+            this.Space.Global.MapHills = 0;
+            nonBlackScreen.FadeIn.MainMenu = this.TheLevel;
+            tracker.LevelTracker.StartFadeIn = true;
+        }
+        else
+        {
+            nonBlackScreen.FadeIn.MainMenu = this.TheLevel;
+            tracker.LevelTracker.StartFadeIn = true;
+        }
+    }
+    
+    function OnMouseDown(event : ViewportMouseEvent)
+    {
+        //Clicked
+        //Color the text will be
+        var r = 0;
+        var g = 0;
+        var b = 255;
+        
+        this.Owner.SpriteText.Color = Real4(r / 255, g / 255, b / 255, 1);
+    }
+    
+    function OnMouseExit(event : ViewportMouseEvent)
+    {
+        //Exiting Button
+        
+        this.Owner.SpriteText.Color = Real4(1, 1, 1, 1);
+    }
+    
+    function OnMouseEnter(event : ViewportMouseEvent)
+    {
+        //Entering Button
+        
+        //Color the text will be
+        var r = 255;
+        var g = 0;
+        var b = 0;
+        
+        this.Owner.SpriteText.Color = Real4(r / 255, g / 255, b / 255, 1);
+    }
+}

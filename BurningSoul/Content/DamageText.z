@@ -1,0 +1,41 @@
+class DamageText : ZilchComponent
+{
+    var Damage : Real = 0;
+    var DamageColor : Real4;
+    var RunOnce : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var movement : Real3 = Real3(0, 0, 0);
+        
+        if(this.RunOnce == true)
+        {
+            this.Owner.SpriteText.Color = this.DamageColor;
+            this.RunOnce = false;
+        }
+        
+        movement.X = 1;
+        movement.Y = 4;
+        
+        this.Owner.Transform.Translation += movement * event.Dt;
+        this.Owner.SpriteText.Text = "`this.Damage`";
+        
+        var objectColor = this.Owner.SpriteText.Color;
+        
+        if(objectColor.W <= 1)
+        {
+            this.Owner.SpriteText.Color -= Real4(0, 0, 0, 0.5) * event.Dt;
+        }
+        
+        if(objectColor.W < 0.02)
+        {
+            this.Owner.SpriteText.Color = Real4(this.DamageColor.X, this.DamageColor.Y, this.DamageColor.Z, 0);
+            this.Owner.Destroy();
+        }
+    }
+}

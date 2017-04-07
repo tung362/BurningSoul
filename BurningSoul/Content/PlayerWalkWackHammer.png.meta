@@ -1,0 +1,20 @@
+ImageContent = 
+{
+	SpriteSourceBuilder = 
+	{
+		string Name = "PlayerWalkWackHammer",
+		uint64 ResourceId = 55f62b87c6b987ca,
+		uint64 AtlasId = 5274cf95e4a661fd,
+		uint FrameSizeX = 70,
+		uint FrameSizeY = 70,
+		uint FrameCount = 11,
+		float FrameDelay = 0.111111,
+		float OriginX = 35,
+		float OriginY = 35,
+		float PixelsPerUnit = 64,
+		bool Smoothing = false,
+		bool Looping = true,
+		Vec4 Slices = [0, 0, 0, 0],
+		SpriteFill Fill = Stretch,
+	},
+},

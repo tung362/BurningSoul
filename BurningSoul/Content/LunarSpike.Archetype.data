@@ -1,0 +1,47 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "LunarSpike",
+	},
+	Archetyped = 
+	{
+		string Name = "55f3e7a9963296dd:LunarSpike",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-26.3748, -43.1965, -0.001],
+		Vec3 Scale = [5, 5, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [0.94, 0.94, 0.94, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "55f3ecc437fff748:LunarSpike1",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool OnTop = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	TerrainDeco = 
+	{
+		bool IsNotSingle = true,
+		string Deco1 = "55f3ecc437fff748:LunarSpike1",
+		string Deco2 = "55f3ecdf34485cd2:LunarSpike2",
+		string Deco3 = "55f3ecd13aeba6bc:LunarSpike3",
+	},
+},

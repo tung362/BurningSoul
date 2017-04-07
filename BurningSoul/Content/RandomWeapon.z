@@ -1,0 +1,269 @@
+class RandomWeapon : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    //1 = Forest, 2 = Tundra, 3 = Desert, 4 = Lunar
+    //0 = nothing, 1 = Stick, 2 = Sword, 3 = Axe, 4 = Hammer
+    [Property]
+    var Chance : Integer = 0;
+    
+    var CanCollide : Boolean = false;
+    
+    [Property]
+    var Stick : SpriteSource = null;
+    //Animations
+    [Property]
+    var PlayerIdleStick : SpriteSource = null;
+    [Property]
+    var PlayerWalkStick : SpriteSource = null;
+    [Property]
+    var PlayerJumpStick : SpriteSource = null;
+    [Property]
+    var PlayerJumpDownStick : SpriteSource = null;
+    [Property]
+    var PlayerSwingStick : SpriteSource = null;
+    [Property]
+    var PlayerWalkSwingStick : SpriteSource = null;
+    [Property]
+    var PlayerJumpAttackStick : SpriteSource = null;
+    
+    [Property]
+    var Sword : SpriteSource = null;
+    //Animations
+    [Property]
+    var PlayerIdleSword : SpriteSource = null;
+    [Property]
+    var PlayerWalkSword : SpriteSource = null;
+    [Property]
+    var PlayerJumpSword : SpriteSource = null;
+    [Property]
+    var PlayerJumpDownSword : SpriteSource = null;
+    [Property]
+    var PlayerSwingSword : SpriteSource = null;
+    [Property]
+    var PlayerWalkSwingSword : SpriteSource = null;
+    [Property]
+    var PlayerJumpAttackSword : SpriteSource = null;
+    
+    [Property]
+    var Axe : SpriteSource = null;
+    //Animations
+    [Property]
+    var PlayerIdleAxe : SpriteSource = null;
+    [Property]
+    var PlayerWalkAxe : SpriteSource = null;
+    [Property]
+    var PlayerJumpAxe : SpriteSource = null;
+    [Property]
+    var PlayerJumpDownAxe : SpriteSource = null;
+    [Property]
+    var PlayerSwingAxe : SpriteSource = null;
+    [Property]
+    var PlayerWalkSwingAxe : SpriteSource = null;
+    [Property]
+    var PlayerJumpAttackAxe : SpriteSource = null;
+    
+    [Property]
+    var Hammer : SpriteSource = null;
+    //Animations
+    [Property]
+    var PlayerIdleHammer : SpriteSource = null;
+    [Property]
+    var PlayerWalkHammer : SpriteSource = null;
+    [Property]
+    var PlayerJumpHammer : SpriteSource = null;
+    [Property]
+    var PlayerJumpDownHammer : SpriteSource = null;
+    [Property]
+    var PlayerSwingHammer : SpriteSource = null;
+    [Property]
+    var PlayerWalkSwingHammer : SpriteSource = null;
+    [Property]
+    var PlayerJumpAttackHammer : SpriteSource = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+        
+        this.Chance = this.Rand.DieRoll(8); //Chance
+        
+        if(this.Chance == 1)
+        {
+            this.Owner.Sprite.SpriteSource = this.Stick;
+            this.Owner.Sprite.Visible = true;
+            this.CanCollide = true;
+        }
+        else if(this.Chance == 2)
+        {
+            this.Owner.Sprite.SpriteSource = this.Sword;
+            this.Owner.Sprite.Visible = true;
+            this.CanCollide = true;
+        }
+        else if(this.Chance == 3)
+        {
+            this.Owner.Sprite.SpriteSource = this.Axe;
+            this.Owner.Sprite.Visible = true;
+            this.CanCollide = true;
+        }
+        else if(this.Chance == 4)
+        {
+            this.Owner.Sprite.SpriteSource = this.Hammer;
+            this.Owner.Sprite.Visible = true;
+            this.CanCollide = true;
+        }
+        
+        //Giving Back Previous Weapon
+        var player = this.Space.FindObjectByName("Player");
+        
+        if(this.Space.Global.HeldWepID == 1)
+        {
+            player.PlayerAnimation.PlayerIdle = this.PlayerIdleStick;
+            player.PlayerAnimation.PlayerWalk = this.PlayerWalkStick;
+            player.PlayerAnimation.PlayerJump = this.PlayerJumpStick;
+            player.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownStick;
+            player.PlayerAnimation.PlayerSwing = this.PlayerSwingStick;
+            player.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingStick;
+            player.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackStick;
+            
+            //Ensures that the animation transition goes smoothly
+            player.Sprite.SpriteSource = player.PlayerAnimation.PlayerIdle;
+            player.PlayerAnimation.RunOnce = true;
+        }
+        else if(this.Space.Global.HeldWepID == 2)
+        {
+            player.PlayerAnimation.PlayerIdle = this.PlayerIdleSword;
+            player.PlayerAnimation.PlayerWalk = this.PlayerWalkSword;
+            player.PlayerAnimation.PlayerJump = this.PlayerJumpSword;
+            player.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownSword;
+            player.PlayerAnimation.PlayerSwing = this.PlayerSwingSword;
+            player.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingSword;
+            player.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackSword;
+            
+            //Ensures that the animation transition goes smoothly
+            player.Sprite.SpriteSource = player.PlayerAnimation.PlayerIdle;
+            player.PlayerAnimation.RunOnce = true;
+        }
+        else if(this.Space.Global.HeldWepID == 3)
+        {
+            player.PlayerAnimation.PlayerIdle = this.PlayerIdleAxe;
+            player.PlayerAnimation.PlayerWalk = this.PlayerWalkAxe;
+            player.PlayerAnimation.PlayerJump = this.PlayerJumpAxe;
+            player.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownAxe;
+            player.PlayerAnimation.PlayerSwing = this.PlayerSwingAxe;
+            player.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingAxe;
+            player.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackAxe;
+            
+            //Ensures that the animation transition goes smoothly
+            player.Sprite.SpriteSource = player.PlayerAnimation.PlayerIdle;
+            player.PlayerAnimation.RunOnce = true;
+        }
+        else if(this.Space.Global.HeldWepID == 4)
+        {
+            player.PlayerAnimation.PlayerIdle = this.PlayerIdleHammer;
+            player.PlayerAnimation.PlayerWalk = this.PlayerWalkHammer;
+            player.PlayerAnimation.PlayerJump = this.PlayerJumpHammer;
+            player.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownHammer;
+            player.PlayerAnimation.PlayerSwing = this.PlayerSwingHammer;
+            player.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingHammer;
+            player.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackHammer;
+            
+            //Ensures that the animation transition goes smoothly
+            player.Sprite.SpriteSource = player.PlayerAnimation.PlayerIdle;
+            player.PlayerAnimation.RunOnce = true;
+        }
+        else
+        {
+            this.Space.Global.HeldWepID = 1;
+            
+            player.PlayerAnimation.PlayerIdle = this.PlayerIdleStick;
+            player.PlayerAnimation.PlayerWalk = this.PlayerWalkStick;
+            player.PlayerAnimation.PlayerJump = this.PlayerJumpStick;
+            player.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownStick;
+            player.PlayerAnimation.PlayerSwing = this.PlayerSwingStick;
+            player.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingStick;
+            player.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackStick;
+            
+            //Ensures that the animation transition goes smoothly
+            player.Sprite.SpriteSource = player.PlayerAnimation.PlayerIdle;
+            player.PlayerAnimation.RunOnce = true;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+    
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        
+        if(other.Name == "Player" && this.CanCollide == true)
+        {
+            var tracker = this.Space.FindObjectByName("LevelTracker");
+            tracker.LevelTracker.DisplayTextWeapons = true;
+            tracker.LevelTracker.DisplayWeaponsTimer = 0;
+            
+                this.Space.Global.HeldWepID = this.Chance;
+                
+                if(this.Chance == 1)
+                {
+                    other.PlayerAnimation.PlayerIdle = this.PlayerIdleStick;
+                    other.PlayerAnimation.PlayerWalk = this.PlayerWalkStick;
+                    other.PlayerAnimation.PlayerJump = this.PlayerJumpStick;
+                    other.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownStick;
+                    other.PlayerAnimation.PlayerSwing = this.PlayerSwingStick;
+                    other.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingStick;
+                    other.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackStick;
+                    
+                    //Ensures that the animation transition goes smoothly
+                    other.Sprite.SpriteSource = other.PlayerAnimation.PlayerIdle;
+                    other.PlayerAnimation.RunOnce = true;
+                }
+                else if(this.Chance == 2)
+                {
+                    other.PlayerAnimation.PlayerIdle = this.PlayerIdleSword;
+                    other.PlayerAnimation.PlayerWalk = this.PlayerWalkSword;
+                    other.PlayerAnimation.PlayerJump = this.PlayerJumpSword;
+                    other.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownSword;
+                    other.PlayerAnimation.PlayerSwing = this.PlayerSwingSword;
+                    other.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingSword;
+                    other.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackSword;
+                    
+                    //Ensures that the animation transition goes smoothly
+                    other.Sprite.SpriteSource = other.PlayerAnimation.PlayerIdle;
+                    other.PlayerAnimation.RunOnce = true;
+                }
+                else if(this.Chance == 3)
+                {
+                    other.PlayerAnimation.PlayerIdle = this.PlayerIdleAxe;
+                    other.PlayerAnimation.PlayerWalk = this.PlayerWalkAxe;
+                    other.PlayerAnimation.PlayerJump = this.PlayerJumpAxe;
+                    other.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownAxe;
+                    other.PlayerAnimation.PlayerSwing = this.PlayerSwingAxe;
+                    other.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingAxe;
+                    other.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackAxe;
+                    
+                    //Ensures that the animation transition goes smoothly
+                    other.Sprite.SpriteSource = other.PlayerAnimation.PlayerIdle;
+                    other.PlayerAnimation.RunOnce = true;
+                }
+                else if(this.Chance == 4)
+                {
+                    other.PlayerAnimation.PlayerIdle = this.PlayerIdleHammer;
+                    other.PlayerAnimation.PlayerWalk = this.PlayerWalkHammer;
+                    other.PlayerAnimation.PlayerJump = this.PlayerJumpHammer;
+                    other.PlayerAnimation.PlayerJumpDown = this.PlayerJumpDownHammer;
+                    other.PlayerAnimation.PlayerSwing = this.PlayerSwingHammer;
+                    other.PlayerAnimation.PlayerWalkSwing = this.PlayerWalkSwingHammer;
+                    other.PlayerAnimation.PlayerJumpAttack = this.PlayerJumpAttackHammer;
+                    
+                    //Ensures that the animation transition goes smoothly
+                    other.Sprite.SpriteSource = other.PlayerAnimation.PlayerIdle;
+                    other.PlayerAnimation.RunOnce = true;
+                }
+                
+                this.Owner.Destroy();
+        }
+    }
+}

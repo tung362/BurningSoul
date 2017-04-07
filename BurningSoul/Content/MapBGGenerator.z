@@ -1,0 +1,76 @@
+class MapBGGenerator : ZilchComponent
+{
+    var NewLocation : Real = 0;
+    var NewYLocation : Real = 0;
+    var PreviousXSpawnedObject : Cog = null;
+    var PreviousYSpawnedObject : Cog = null;
+    
+    //Stuff to spawn
+    [Property]
+    var GrassBG : Archetype = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        var objectPos = this.Owner.Transform.Translation;
+        
+        for( var i : Integer = 0; i < this.Space.Global.MapSizeX; ++i)
+        {
+            if(this.PreviousXSpawnedObject == null)
+            {
+                var structure = this.Space.CreateAtPosition( this.GrassBG, Real3(objectPos.X, objectPos.Y, -0.009));
+                var structure2 = this.Space.CreateAtPosition( this.GrassBG, Real3(objectPos.X - 5.57, objectPos.Y, -0.009));
+                this.PreviousXSpawnedObject = structure;
+            }
+            else
+            {
+                var prevPos = this.PreviousXSpawnedObject.Transform.Translation;
+                var structure = this.Space.CreateAtPosition( this.GrassBG, Real3(prevPos.X + 5.57, objectPos.Y, -0.009));
+                if(i == this.Space.Global.MapSizeX - 1)
+                {
+                    var structure2 = this.Space.CreateAtPosition( this.GrassBG, Real3(prevPos.X + 5.57 + 5.57, objectPos.Y, -0.009));
+                    var structure3 = this.Space.CreateAtPosition( this.GrassBG, Real3(prevPos.X + 5.57 + 5.57, objectPos.Y + 5.57, -0.009));
+                }
+                this.PreviousXSpawnedObject = structure;
+            }
+            
+            for( var j : Integer = 0; j < this.Space.Global.MapSizeY; ++j)
+            {
+                var prevPos = this.PreviousXSpawnedObject.Transform.Translation;
+                
+                if(this.PreviousYSpawnedObject == null)
+                {
+                    var structure = this.Space.CreateAtPosition( this.GrassBG, Real3(prevPos.X, objectPos.Y + 5.57, -0.009));
+                    var structure2 = this.Space.CreateAtPosition( this.GrassBG, Real3(prevPos.X - 5.57, objectPos.Y + 5.57, -0.009));
+                    this.PreviousYSpawnedObject = structure;
+                }
+                else
+                {
+                    var prevYPos = this.PreviousYSpawnedObject.Transform.Translation;
+                    var structure = this.Space.CreateAtPosition( this.GrassBG, Real3(prevPos.X, prevYPos.Y + 5.57, -0.009));
+                    
+                    if(i == 0)
+                    {
+                        var structure2 = this.Space.CreateAtPosition( this.GrassBG, Real3(prevPos.X - 5.57, prevYPos.Y + 5.57, -0.009));
+                    }
+                    else if(i == this.Space.Global.MapSizeX - 1)
+                    {
+                        var structure2 = this.Space.CreateAtPosition( this.GrassBG, Real3(prevPos.X + 5.57, prevYPos.Y + 5.57, -0.009));
+                    }
+                    
+                    this.PreviousYSpawnedObject = structure;
+                    
+                    if(j == this.Space.Global.MapSizeY - 1)
+                    {
+                        this.PreviousYSpawnedObject = null;
+                    }
+                }
+            }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

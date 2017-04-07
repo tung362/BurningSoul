@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MagicBar",
+		uint64 ResourceId = 55f6ad69dff59a6a,
+	},
+},

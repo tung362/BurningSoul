@@ -1,0 +1,91 @@
+at the start of the level the player can pick 3 different rooms and
+depending on the room they pick they will get different starting stats.
+
+Setting:
+----------------
+A Cave
+
+features:
+----------------
+random generation
+leveling system (increase stats, skill points)
+Skill tree (select skills)
+mobs drops exp orbs (+5 Exp)
+random boss encounters in rooms
+
+Leveling:
+----------------
+Each level the player's stats increases with a fixed amount
+HP + 2
+MP + 2
+
+Global Data:
+----------------
+Current Health
+Max Health
+Current Magic
+Max Magic
+Health Potion Number
+Max Health Potion Number
+Magic Potion Number
+Max Magic Potion Number
+Current Level Number
+Skill Point
+Current Experience Number
+Max Experience Number
+Weapon ID
+
+starting rooms:
+----------------
+room1 - 10 hp, 10 mag
+room2 - 18 hp, 5 mag
+room3 - 5 hp, 18 mag
+
+Skills:
+----------------
+
+
+Mobs:
+----------------
+Grass:
+Warrior HP: 22 , Dam: 5
+Mage HP: 15 , Dam: 3
+Pig HP: 10 , Dam: 0
+Slime HP: 13 , Dam: 2
+Bull: HP: 18 , Dam: 4
+
+Snow:
+Flying Skull HP: 15 , Dam: 4
+Yeti HP: 25 , Dam: 5
+SnowMan HP: 12 , Dam: 2
+SnowLeopard HP: 14 , Dam: 4
+
+Desert:
+Genie HP: 20 , Dam: 5
+Elephant HP: 30 , Dam: 7
+Spider HP: 12 , Dam: 4
+SandWorm HP: 10 , Dam: 2
+DustDevil HP: 13 , Dam: 1
+Mouth Charger HP: 12 , Dam: 4
+
+Lunar:
+Shadow People Melee HP: 20 , Dam: 5
+SHadow People Mage HP: 17 , Dam: 4
+Flying Shadow Cannon HP: 12 , Dam: 5
+Giant Shadow Knight HP: 30 , Dam: 8
+
+
+
+Melee Weapon:
+----------------
+Starting Wep: Stick (Speed: 10, Dam: 3)
+Sword (Speed: 7, Dam: 6)
+Axe (Speed: 5, Dam: 8)
+Hammer (Speed: 3, Dam: 12)
+
+
+
+
+Min Map Size: 122 | Max Map Size: 320 (By X)
+
+

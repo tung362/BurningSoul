@@ -1,0 +1,68 @@
+class DecorateTreeTerrain : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    var FinishedGenerating : Boolean = false;
+    
+    var Start : Boolean = true;
+    var Chance : Integer = 0;
+    var MaxTreeNum : Integer = 0;
+    var PreviousSpawnedObject : Cog = null;
+    
+    //Stuff to spawn
+    [Property]
+    var TreeBase : Archetype = null;
+    [Property]
+    var TreeTrunk : Archetype = null;
+    [Property]
+    var TreeTop : Archetype = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var objectPos = this.Owner.Transform.Translation;
+        var tracker = this.Space.FindObjectByName("LevelTracker");
+        
+        if(this.Start == true && tracker.LevelTracker.StartDecorating == true)
+        {
+            this.Chance = this.Rand.DieRoll(4); //Chance
+            
+            if(this.Chance == 1)
+            {
+                this.MaxTreeNum = this.Rand.RangeInclusiveMax(2, 3); //Max tree tallness
+                var randomX = this.Rand.Range(-1.08, 0.67);
+                
+                for(var i : Integer = 0; i < this.MaxTreeNum; ++i)
+                {
+                    if(i == 0) //Base
+                    {
+                        var tree = this.Space.CreateAtPosition(this.TreeBase, Real3(objectPos.X + randomX, objectPos.Y + 2.64, 0.00003));
+                        //tree.TheTree.TreeID = i + 1;
+                        this.PreviousSpawnedObject = tree;
+                    }
+                    else if(i == this.MaxTreeNum - 1)
+                    {
+                        var prevpos = this.PreviousSpawnedObject.Transform.Translation;
+                        var tree = this.Space.CreateAtPosition(this.TreeTop, Real3(prevpos.X, prevpos.Y + 4.64, 0.0003));
+                        //tree.TheTree.TreeID = i + 1;
+                        this.FinishedGenerating = true;
+                    }
+                    else
+                    {
+                        var prevpos = this.PreviousSpawnedObject.Transform.Translation;
+                        var tree = this.Space.CreateAtPosition(this.TreeTrunk, Real3(prevpos.X, prevpos.Y + 4.64, 0.0003));
+                        //tree.TheTree.TreeID = i + 1;
+                        this.PreviousSpawnedObject = tree;
+                    }
+                }
+            }
+            
+            this.Start = false;
+            this.Owner.RemoveComponentByName("DecorateTreeTerrain");
+        }
+    }
+}

@@ -1,0 +1,195 @@
+class NormalGroundAnimation : ZilchComponent
+{
+    [Property]
+    var AttackFrameTrigger : Integer = 5;
+    
+    //Animations
+    [Property]
+    var PlayerIdle : SpriteSource = null;
+    [Property]
+    var PlayerWalk : SpriteSource = null;
+    [Property]
+    var PlayerSwing : SpriteSource = null;
+    [Property]
+    var PlayerDeath : SpriteSource = null;
+    
+    //Collision Group
+    [Property]
+    var GhostGroup : CollisionGroup = null;
+    [Property]
+    var SolidGroup : CollisionGroup = null;
+    
+    //Swing Delay
+    var SwingStopperTimer : Real = 0;
+    [Property]
+    var SwingStopperDelay : Real = 0.5;
+    var HasSwinged : Boolean = false;
+    
+    //Drops
+    var CanDrop : Boolean = true;
+    [Property]
+    var ExpOrb : Archetype = null;
+    [Property]
+    var HealthPotion : Archetype = null;
+    [Property]
+    var MagicPotion : Archetype = null;
+    
+    var CanPlaySound : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Find All Child Hit Boxes
+        var playerRightSwing = this.Owner.FindChildByName("EnemyRightSwing");
+        var playerLeftSwing = this.Owner.FindChildByName("EnemyLeftSwing");
+        
+        //var player = this.Space.FindObjectByName("Player");
+        
+        //Death
+        if(this.Owner.EnemyHealth.Health <= 0)
+        {
+            if(this.CanDrop == true)
+            {
+                if(this.CanPlaySound == true)
+                {
+                    this.Owner.SoundEmitter.Cue = SoundCue.Find("MiscSound");
+                    this.Owner.SoundEmitter.Volume = 1;
+                    this.Owner.SoundEmitter.Play();
+                    this.CanPlaySound = false;
+                }
+                this.CanPlaySound = true;
+                
+                var rand : Random = Random();
+                var objectPos = this.Owner.Transform.Translation;
+                var healthChance : Integer = 0;
+                var magicChance : Integer = 0;
+                var randomAmountOfOrbs : Integer = 0;
+                
+                healthChance = rand.DieRoll(5);
+                magicChance = rand.DieRoll(5);
+                randomAmountOfOrbs = rand.RangeInclusiveMax(5, 8);
+                
+                if(healthChance == 1)
+                {
+                    var hp = this.Space.CreateAtPosition(this.HealthPotion, Real3(objectPos.X, objectPos.Y, 0));
+                }
+                if(magicChance == 2)
+                {
+                    var mp = this.Space.CreateAtPosition(this.HealthPotion, Real3(objectPos.X, objectPos.Y, 0));
+                }
+                
+                for( var i : Integer = 0; i < randomAmountOfOrbs; ++i)
+                {
+                    var xp = this.Space.CreateAtPosition(this.ExpOrb, Real3(objectPos.X, objectPos.Y, 0));
+                }
+                
+                this.CanDrop = false;
+            }
+            this.Owner.Sprite.SpriteSource = this.PlayerDeath;
+        }
+        
+        //Can Swing again after delay
+        if(this.HasSwinged == true)
+        {
+            this.SwingStopperTimer += event.Dt;
+            
+            if(this.SwingStopperTimer > this.SwingStopperDelay)
+            {
+                this.HasSwinged = false;
+                this.SwingStopperTimer = 0;
+            }
+        }
+        
+        ///////////////////////////////////////////////////////////////////////////////////////
+        //Start of AI
+        if(this.Owner.NormalGroundController.ActivateAI == true)
+        {
+            //Idle
+            if(this.Owner.Sprite.SpriteSource == this.PlayerIdle)
+            {
+                this.CanPlaySound = true;
+                
+                //playerRightSwing.Sprite.Visible = false;
+                //playerLeftSwing.Sprite.Visible = false;
+                
+                playerRightSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+                playerLeftSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+                
+                //Walk
+                if(this.Owner.NormalGroundController.Walking == true && this.HasSwinged == false)
+                {
+                    this.Owner.Sprite.SpriteSource = this.PlayerWalk;
+                }
+                
+                //Swing
+                if(this.Owner.NormalGroundController.Attacking == true && this.HasSwinged == false)
+                {
+                    this.Owner.Sprite.SpriteSource = this.PlayerSwing;
+                }
+            }
+            
+            //Swing
+            else if(this.Owner.Sprite.SpriteSource == this.PlayerSwing)
+            {
+                
+                this.HasSwinged = true;
+                
+                if(this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.SpriteSource.FrameCount - this.AttackFrameTrigger)
+                {
+                    if(this.CanPlaySound == true)
+                    {
+                        this.Owner.SoundEmitter.Cue = SoundCue.Find("Attack1");
+                        this.Owner.SoundEmitter.Volume = 1;
+                        this.Owner.SoundEmitter.Play();
+                        this.CanPlaySound = false;
+                    }
+                    
+                    if(this.Owner.NormalGroundController.IsRight == true)
+                    {
+                        //playerRightSwing.Sprite.Visible = true;
+                        playerRightSwing.BoxCollider.CollisionGroup = this.SolidGroup;
+                    }
+                    else
+                    {
+                        //playerLeftSwing.Sprite.Visible = true;
+                        playerLeftSwing.BoxCollider.CollisionGroup = this.SolidGroup;
+                    }
+                }
+                
+                //Idle
+                if(this.Owner.Sprite.CurrentFrame >= this.Owner.Sprite.SpriteSource.FrameCount - 1)
+                {
+                    this.Owner.Sprite.SpriteSource = this.PlayerIdle;
+                }
+            }
+            
+            //Walk
+            else if(this.Owner.Sprite.SpriteSource == this.PlayerWalk)
+            {
+                this.CanPlaySound = true;
+                
+                //playerRightSwing.Sprite.Visible = false;
+                //playerLeftSwing.Sprite.Visible = false;
+                
+                playerRightSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+                playerLeftSwing.BoxCollider.CollisionGroup = this.GhostGroup;
+                
+                if(this.Owner.NormalGroundController.Walking == false)
+                {
+                    this.Owner.Sprite.SpriteSource = this.PlayerIdle;
+                }
+                
+                //Swing
+                if(this.Owner.NormalGroundController.Attacking == true && this.HasSwinged == false)
+                {
+                    this.Owner.Sprite.SpriteSource = this.PlayerSwing;
+                }
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////
+    }
+}

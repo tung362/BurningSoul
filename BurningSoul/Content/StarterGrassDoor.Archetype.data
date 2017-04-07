@@ -1,0 +1,55 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "StarterGrassDoor",
+	},
+	Archetyped = 
+	{
+		string Name = "55f10576062ed2b1:GrassDoor",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-0.521383, -6.21294, -0.0001],
+		Vec3 Scale = [7, 7, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [0.4, 0.4, 0.4, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "55f113890b301ae5:GrassDoor",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool OnTop = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	BoxCollider = 
+	{
+		bool Ghost = true,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "55e77fe58ffaa571:NoDelete",
+		Vec3 Offset = [0.04, -0.05, 0],
+		Vec3 Size = [0.4, 0.35, 0.5],
+	},
+	Door = 
+	{
+		int BiomeType = 1,
+		string TheBiome = "55d822dc815f7cf8:Level",
+	},
+},

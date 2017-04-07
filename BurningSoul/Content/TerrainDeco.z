@@ -1,0 +1,49 @@
+class TerrainDeco : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    [Property]
+    var IsNotSingle : Boolean = true;
+    var Type : Integer = 1;
+    
+    //Sprites
+    [Property]
+    var Deco1 : SpriteSource = null;
+    [Property]
+    var Deco2 : SpriteSource = null;
+    [Property]
+    var Deco3 : SpriteSource = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Type = this.Rand.DieRoll(3);
+        
+        if(this.IsNotSingle == true)
+        {
+            if(this.Type == 1)
+            {
+                this.Owner.Sprite.SpriteSource = this.Deco1;
+            }
+            else if (this.Type == 2)
+            {
+                this.Owner.Sprite.SpriteSource = this.Deco2;
+            }
+            else if (this.Type == 3)
+            {
+                this.Owner.Sprite.SpriteSource = this.Deco3;
+            }
+        }
+        else
+        {
+            this.Owner.Sprite.SpriteSource = this.Deco1;
+        }
+        
+        this.Owner.RemoveComponentByName("TerrainDeco");
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

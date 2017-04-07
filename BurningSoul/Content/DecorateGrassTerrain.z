@@ -1,0 +1,73 @@
+class DecorateGrassTerrain : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    var Start : Boolean = true;
+    
+    [Property]
+    var CanSpawnFlower : Boolean = true;
+    [Property]
+    var ChanceFlower : Integer = 1;
+    [Property]
+    var ChanceFlowerNum : Integer = 3;
+    
+    [Property]
+    var CanSpawnWeed : Boolean = true;
+    [Property]
+    var ChanceWeed : Integer = 1;
+    [Property]
+    var ChanceWeedNum : Integer = 3;
+    
+    //Stuff to spawn
+    [Property]
+    var Flower : Archetype = null;
+    [Property]
+    var Weed : Archetype = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var objectPos = this.Owner.Transform.Translation;
+        var tracker = this.Space.FindObjectByName("LevelTracker");
+        
+        if(this.Start == true && tracker.LevelTracker.StartDecorating == true)
+        {
+            var flowerNum = this.Rand.DieRoll(this.ChanceFlower); //Chance
+            var weedNum = this.Rand.DieRoll(this.ChanceWeed); //Chance
+            
+            if(flowerNum == 1 && this.CanSpawnFlower == true)
+            {
+                var numOfObject = this.Rand.DieRoll(this.ChanceFlowerNum);
+                
+                for(var i : Integer = 0; i < numOfObject; ++i)
+                {
+                    var randomX = this.Rand.Range(-2.3, 2.3);
+                    var randomY = this.Rand.Range(0.7, 0.96);
+                    
+                    var weed = this.Space.CreateAtPosition(this.Flower, Real3(objectPos.X + randomX, objectPos.Y + randomY, 0.0002));
+                }
+            }
+            
+            if(weedNum == 1 && this.CanSpawnWeed == true)
+            {
+                var numOfObject = this.Rand.DieRoll(this.ChanceWeedNum);
+                
+                for(var i : Integer = 0; i < numOfObject; ++i)
+                {
+                    var randomX = this.Rand.Range(-2.3, 2.3);
+                    var randomY = this.Rand.Range(0.7, 0.96);
+                    
+                    var weed = this.Space.CreateAtPosition(this.Weed, Real3(objectPos.X + randomX, objectPos.Y + randomY, 0.0001));
+                }
+            }
+            this.Start = false;
+            
+            //this.Owner.RemoveComponentByName("Grass");
+            this.Owner.RemoveComponentByName("DecorateGrassTerrain");
+        }
+    }
+}

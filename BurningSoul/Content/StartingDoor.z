@@ -1,0 +1,38 @@
+class StartingDoor : ZilchComponent
+{
+    [Property]
+    var GrassDoor : SpriteSource = null;
+    [Property]
+    var SnowDoor : SpriteSource = null;
+    [Property]
+    var DesertDoor : SpriteSource = null;
+    [Property]
+    var LunarDoor : SpriteSource = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        //1 = Forest, 2 = Tundra, 3 = Desert, 4 = Lunar
+        if(this.Space.Global.BiomeType == 1)
+        {
+            this.Owner.Sprite.SpriteSource = this.GrassDoor;
+        }
+        else if(this.Space.Global.BiomeType == 2)
+        {
+            this.Owner.Sprite.SpriteSource = this.SnowDoor;
+        }
+        else if(this.Space.Global.BiomeType == 3)
+        {
+            this.Owner.Sprite.SpriteSource = this.DesertDoor;
+        }
+        else if(this.Space.Global.BiomeType == 4)
+        {
+            this.Owner.Sprite.SpriteSource = this.LunarDoor;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

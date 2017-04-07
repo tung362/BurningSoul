@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CreditMusicBox",
+		uint64 ResourceId = 55f3578cc2a0a35a,
+	},
+},

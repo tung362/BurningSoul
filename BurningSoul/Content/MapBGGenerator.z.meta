@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "MapBGGenerator",
+		uint64 ResourceId = 55eebfdef836290c,
+	},
+},

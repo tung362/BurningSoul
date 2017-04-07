@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "TerrainDeco",
+		uint64 ResourceId = 55f4d07a4b8234b2,
+	},
+},

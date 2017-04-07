@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "DecoDestroyer",
+		uint64 ResourceId = 55d927ef56586c33,
+	},
+},

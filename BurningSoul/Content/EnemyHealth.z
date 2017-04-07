@@ -1,0 +1,62 @@
+class EnemyHealth : ZilchComponent
+{
+    [Property]
+    var Health : Real = 10;
+    [Property]
+    var Damage : Real = 2;
+    
+    var DeathTimer : Real = 0;
+    
+    [Property]
+    var DamageColorPicker : Real4;
+    
+    var CanPlaySound : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        
+        this.Health += this.Space.Global.CurrentLevel + 2;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if(this.Health <= 0)
+        {
+            this.DeathTimer += event.Dt;
+            
+            if(this.DeathTimer > 1)
+            {
+                this.Owner.Destroy();
+            }
+        }
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        var tracker  = this.Space.FindObjectByName("LevelTracker");
+        
+        if(other.Name == "PlayerRightSwing" || other.Name == "PlayerLeftSwing")
+        {
+            this.CanPlaySound = true;
+            if(this.CanPlaySound == true)
+            {
+                this.Owner.SoundEmitter.Cue = SoundCue.Find("Attack3");
+                this.Owner.SoundEmitter.Volume = 1;
+                this.Owner.SoundEmitter.Play();
+                this.CanPlaySound = false;
+            }
+            
+            var objectPos = this.Owner.Transform.Translation;
+            var damText = this.Space.CreateAtPosition(Archetype.Find("DamageText"), Real3(objectPos.X, objectPos.Y, 0.05));
+            damText.DamageText.Damage = other.Damage.Damage;
+            damText.DamageText.DamageColor = this.DamageColorPicker;
+            tracker.LevelTracker.ShakeCam = true;
+            tracker.LevelTracker.ShakeDuration = 0.1;
+            tracker.LevelTracker.ShakePower = 0.05;
+            this.Health -= other.Damage.Damage;
+        }
+    }
+}

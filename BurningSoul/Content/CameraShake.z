@@ -1,0 +1,20 @@
+class CameraShake : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var tracker  = this.Space.FindObjectByName("LevelTracker");
+        
+        //Shakes the camera
+        if(tracker.LevelTracker.ShakeCam == true)
+        {
+            this.Owner.Transform.Translation = Real3(0 + this.Rand.Range(-tracker.LevelTracker.ShakePower, tracker.LevelTracker.ShakePower), 0 + this.Rand.Range(-tracker.LevelTracker.ShakePower, tracker.LevelTracker.ShakePower), 4);
+        }
+    }
+}

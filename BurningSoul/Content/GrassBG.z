@@ -1,0 +1,70 @@
+class GrassBG : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    [Property]
+    var ParticlesOnly : Boolean = false;
+    
+    [Property]
+    var SpawnParticle : Boolean = false;
+    [Property]
+    var ParticleChanceNum : Integer = 15;
+    var ParticleChance : Integer = 0;
+    
+    var Type : Integer = 1;
+    
+    [Property]
+    var Particle : Archetype = null;
+    
+    [Property]
+    var Sprite1 : SpriteSource = null;
+    [Property]
+    var Sprite2 : SpriteSource = null;
+    [Property]
+    var Sprite3 : SpriteSource = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.Owner.Name = "GrassBG";
+        this.ParticleChance = this.Rand.DieRoll(this.ParticleChanceNum);
+        this.Type = this.Rand.DieRoll(3);
+        
+        if(this.SpawnParticle == true)
+        {
+            if(this.ParticleChance == 1)
+            {
+                var objectPos = this.Owner.Transform.Translation;
+                this.Space.CreateAtPosition(this.Particle, Real3(objectPos.X, objectPos.Y, 0.01));
+            }
+        }
+        
+        if(this.ParticlesOnly == false)
+        {
+            if(this.Type == 1)
+            {
+                this.Owner.Sprite.SpriteSource = this.Sprite1;
+            }
+            else if (this.Type == 2)
+            {
+                this.Owner.Sprite.SpriteSource = this.Sprite2;
+            }
+            else if (this.Type == 3)
+            {
+                this.Owner.Sprite.SpriteSource = this.Sprite3;
+            }
+            
+            if(this.Owner.BoxCollider != null)
+            {
+                this.Owner.RemoveComponentByName("BoxCollider");
+            }
+        }
+        
+        this.Owner.RemoveComponentByName("GrassBG");
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

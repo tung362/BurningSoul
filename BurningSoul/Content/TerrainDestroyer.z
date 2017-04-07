@@ -1,0 +1,22 @@
+class TerrainDestroyer : ZilchComponent
+{
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionPersisted, this.OnCollisionPersisted);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+    
+    function OnCollisionPersisted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        if(other.Name == "Grass" || other.Name == "GrassBG")
+        {
+            other.Destroy();
+            //this.Owner.Destroy();
+        }
+    }
+}

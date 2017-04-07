@@ -1,0 +1,57 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "TreeTrunkSnow",
+	},
+	Archetyped = 
+	{
+		string Name = "55f3ed3be52b4aed:TreeTrunkSnow",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-19.0422, -68.3542, -0.001],
+		Vec3 Scale = [2.5, 2.5, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [0.94, 0.94, 0.94, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "55f3ed5d111bef27:TreeTrunkSnow1",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool OnTop = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	TerrainDeco = 
+	{
+		bool IsNotSingle = true,
+		string Deco1 = "55f3ed5d111bef27:TreeTrunkSnow1",
+		string Deco2 = "55f3ed5717a70dc8:TreeTrunkSnow2",
+		string Deco3 = "55f3ed6914cb8c8b:TreeTrunkSnow3",
+	},
+	BoxCollider = 
+	{
+		bool Ghost = true,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "55e77fe58ffaa571:NoDelete",
+		Vec3 Offset = [0, 0, 0],
+		Vec3 Size = [0.3, 0.85, 0.5],
+	},
+},

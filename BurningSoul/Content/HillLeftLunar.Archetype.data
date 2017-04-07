@@ -1,0 +1,74 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "HillLeftLunar",
+	},
+	Archetyped = 
+	{
+		string Name = "55f0edb564341360:HillLeftLunar",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [31.6649, -69.4323, -0.001],
+		Vec3 Scale = [3, 3, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "55f0f25625478175:HillLeftLunar1",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool OnTop = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	BoxCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "55e4bc625d47ce01:Terrain",
+		Vec3 Offset = [0.427, -0.427, 0],
+		Vec3 Size = [0.5145, 0.5145, 0.5],
+	},
+	Grass = 
+	{
+		string Sprite1 = "55f0f25625478175:HillLeftLunar1",
+		string Sprite2 = "55f0f2562547a547:HillLeftLunar2",
+		string Sprite3 = "55f0f2562547c98e:HillLeftLunar3",
+	},
+	DecorateGrassHillCornerTerrain = 
+	{
+		bool IsLeft = true,
+		bool CanSpawnFlower = true,
+		int ChanceFlower = 2,
+		int ChanceFlowerNum = 1,
+		bool CanSpawnWeed = true,
+		int ChanceWeed = 2,
+		int ChanceWeedNum = 1,
+		string Flower = "55f3e7a9963296dd:LunarSpike",
+		string Weed = "55f3e7888fe9dd34:LunarRock",
+	},
+	MobSpawner = 
+	{
+	},
+	Hierarchy = 
+	{
+	},
+},

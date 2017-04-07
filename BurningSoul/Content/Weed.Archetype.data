@@ -1,0 +1,47 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "Weed",
+	},
+	Archetyped = 
+	{
+		string Name = "55f4cfd388fc7f5d:Weed",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-21.6261, -42.3899, -0.001],
+		Vec3 Scale = [5, 5, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [0.94, 0.94, 0.94, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "55f4ce06c234e906:Weed1",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool OnTop = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	TerrainDeco = 
+	{
+		bool IsNotSingle = true,
+		string Deco1 = "55f4ce06c234e906:Weed1",
+		string Deco2 = "55f4ce1ec0c6b3e2:Weed2",
+		string Deco3 = "55f4ce10c111d807:Weed3",
+	},
+},

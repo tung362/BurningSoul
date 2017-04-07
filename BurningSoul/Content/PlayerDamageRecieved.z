@@ -1,0 +1,62 @@
+class PlayerDamageRecieved : ZilchComponent
+{
+    [Property]
+    var DamageColorPicker : Real4;
+    
+    var CanPlaySound : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        var tracker  = this.Space.FindObjectByName("LevelTracker");
+        
+        //Hit Box
+        if(other.Name == "EnemyRightSwing" || other.Name == "EnemyLeftSwing")
+        {
+            this.CanPlaySound = true;
+            if(this.CanPlaySound == true)
+            {
+                this.Owner.SoundEmitter.Cue = SoundCue.Find("Attack2");
+                this.Owner.SoundEmitter.Volume = 1;
+                this.Owner.SoundEmitter.Play();
+                this.CanPlaySound = false;
+            }
+            
+            var objectPos = this.Owner.Transform.Translation;
+            var damText = this.Space.CreateAtPosition(Archetype.Find("DamageText"), Real3(objectPos.X, objectPos.Y, 0.05));
+            damText.DamageText.Damage = other.Damage.Damage;
+            damText.DamageText.DamageColor = this.DamageColorPicker;
+            tracker.LevelTracker.ShakeCam = true;
+            tracker.LevelTracker.ShakeDuration = 0.1;
+            tracker.LevelTracker.ShakePower = 0.05;
+            this.Space.Global.CurrentHealth -= other.Damage.Damage;
+        }
+        
+        //Drops
+        else if(other.Name == "ExpOrb")
+        {
+            this.Space.Global.CurrentExp += 10;
+            other.Destroy();
+        }
+        else if(other.Name == "HealthPotion")
+        {
+            this.Space.Global.CurrentHealthPotionNum += 1;
+            other.Destroy();
+        }
+        else if(other.Name == "MagicPotion")
+        {
+            this.Space.Global.CurrentMagicPotionNum += 1;
+            other.Destroy();
+        }
+    }
+}

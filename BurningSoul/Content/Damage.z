@@ -1,0 +1,23 @@
+class Damage : ZilchComponent
+{
+    [Property]
+    var IsPlayer : Boolean = true;
+    
+    var Damage : Real = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        var parent = this.Owner.Parent;
+        
+        if(this.IsPlayer == false)
+        {
+            this.Damage = parent.EnemyHealth.Damage;
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

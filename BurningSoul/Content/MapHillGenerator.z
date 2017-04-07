@@ -1,0 +1,274 @@
+class MapHillGenerator : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    //Prevents 2 platforms being on top of one another
+    var NewLocation : Real = 0;
+    var NewYLocation : Real = 0;
+    var PreviousXHill : Cog = null;
+    var PreviousXSpawnedObject : Cog = null;
+    var PreviousYSpawnedObject : Cog = null;
+    
+    //Stuff to spawn
+    [Property]
+    var BottomGrass : Archetype = null;
+    [Property]
+    var RightGrass : Archetype = null;
+    [Property]
+    var LeftGrass : Archetype = null;
+    [Property]
+    var BottomRightGrass : Archetype = null;
+    [Property]
+    var BottomLeftGrass : Archetype = null;
+    [Property]
+    var TopRightGrass : Archetype = null;
+    [Property]
+    var TopLeftGrass : Archetype = null;
+    [Property]
+    var HillLeftGrass : Archetype = null;
+    [Property]
+    var HillRightGrass : Archetype = null;
+    [Property]
+    var PlatformLeftEndGrass : Archetype = null;
+    [Property]
+    var PlatformRightEndGrass : Archetype = null;
+    [Property]
+    var PlatformMiddleGrass : Archetype = null;
+    [Property]
+    var Destroyer : Archetype = null;
+    [Property]
+    var DecoDestroyer : Archetype = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        //X
+        var minPlatformXPos : Real = this.Owner.Transform.Translation.X + 5.57;
+        //Find Max
+        var mapXActualSize : Real = this.Space.Global.MapSizeX * 5.57;
+        var generatorXPosAdjustedMax : Real = this.Owner.Transform.Translation.X + mapXActualSize;
+        var maxPlatformActualSize : Real = 17 * 5.57; //5 = max platform length
+        var theMaxPossibleXPos : Real = generatorXPosAdjustedMax - maxPlatformActualSize;
+        
+        //Y
+        var minPlatformYPos : Real = this.Owner.Transform.Translation.X + (5.57 * 1);
+        //Find Max X
+        var mapYActualSize : Real = this.Space.Global.MapSizeY * 5.57;
+        var generatorYPosAdjustedMax : Real = this.Owner.Transform.Translation.Y + mapYActualSize;
+        var theMaxPossibleYPos : Real = generatorYPosAdjustedMax - (2 * 5.57);
+        
+        var baseGenerator = this.Space.FindObjectByName("MapWallGenerator");
+        var platformGenerator = this.Space.FindObjectByName("MapPlatformGenerator");
+        var tracker = this.Space.FindObjectByName("LevelTracker");
+        
+        if(baseGenerator.MapGeneratorBase.FinishedGeneration == true && platformGenerator.MapPlatformGenerator.FinishedGeneration == true)
+        {
+            for( var i : Integer = 0; i < this.Space.Global.MapHills; ++i) //Number of hills
+            {
+                var randomHillXNumber = this.Rand.RangeInclusiveMax(3, 5); //Size Of Hill
+                var randomHillYNumber = this.Rand.RangeInclusiveMax(2, 3); //Size Of Hill
+                
+                var objectPos = this.Owner.Transform.Translation;
+                var randomX = this.Rand.RangeInclusiveMax(2, 10); //Distance away
+                var nextSpawnPos : Real = randomX * 5.57;
+                
+                if(this.NewLocation >= theMaxPossibleXPos)
+                {
+                    tracker.LevelTracker.CanDecorate = true;
+                    break;
+                }
+                
+                if(i == this.Space.Global.MapHills - 1)
+                {
+                    tracker.LevelTracker.CanDecorate = true;
+                    break;
+                }
+                
+                for( var j : Integer = 0; j < randomHillXNumber; ++j) //Deletion row (X)
+                {
+                    //First time spawning
+                    if(this.PreviousXSpawnedObject == null || this.PreviousXHill == null && this.NewLocation == 0) //Bottom Left Hill Corner
+                    {
+                        //Console.WriteLine(this.NewLocation);
+                        var structure = this.Space.CreateAtPosition( this.Destroyer, Real3(objectPos.X + nextSpawnPos + this.NewLocation, objectPos.Y, -0.0005));
+                        var solidStructure = this.Space.CreateAtPosition( this.BottomRightGrass, Real3(objectPos.X + nextSpawnPos + this.NewLocation, objectPos.Y, -0.001));
+                        solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                        this.PreviousXSpawnedObject = structure;
+                        this.PreviousXHill = structure;
+                    }
+                    else if(this.PreviousXSpawnedObject == null || this.PreviousXHill == null && this.NewLocation != 0) //Bottom Left Hill Corner
+                    {
+                        //Console.WriteLine(this.NewLocation);
+                        var structure = this.Space.CreateAtPosition( this.Destroyer, Real3(this.NewLocation + nextSpawnPos, objectPos.Y, -0.0005));
+                        var solidStructure = this.Space.CreateAtPosition( this.BottomRightGrass, Real3(this.NewLocation + nextSpawnPos, objectPos.Y, -0.001));
+                        solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                        this.PreviousXSpawnedObject = structure;
+                        this.PreviousXHill = structure;
+                    }
+                    else
+                    {
+                        var prevPos = this.PreviousXSpawnedObject.Transform.Translation;
+                        
+                        var structure = this.Space.CreateAtPosition( this.Destroyer, Real3(prevPos.X + 5.57, objectPos.Y, -0.0005));
+                        this.PreviousXSpawnedObject = structure;
+                        
+                        if(j == randomHillXNumber - 1) //Bottom Right Hill Corner
+                        {
+                            var solidStructure = this.Space.CreateAtPosition( this.BottomLeftGrass, Real3(prevPos.X + 5.57, objectPos.Y, -0.001));
+                            solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                            this.NewLocation = solidStructure.Transform.Translation.X;
+                            this.PreviousXHill = null;
+                        }
+                        
+                        if(j != 0 && j != randomHillXNumber - 1)
+                        {
+                            structure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDeleteOverride");
+                        }
+                    }
+                    
+                    for( var k : Integer = 0; k < randomHillYNumber; ++k) //Deletion collum (Y)
+                    {
+                        if(this.PreviousYSpawnedObject == null)
+                        {
+                            var prevPos = this.PreviousXSpawnedObject.Transform.Translation;
+                            var structure = this.Space.CreateAtPosition( this.Destroyer, Real3(prevPos.X, objectPos.Y + 5.57, -0.0005));
+                            if(j == 0) //Right Hill Edge (Lower)
+                            {
+                                var solidStructure = this.Space.CreateAtPosition( this.RightGrass, Real3(prevPos.X, objectPos.Y + 5.57, -0.001));
+                                var decoDestoryer = this.Space.CreateAtPosition( this.DecoDestroyer, Real3(prevPos.X, objectPos.Y + 5.57, 0.001));
+                                solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                            }
+                            else if(j == randomHillXNumber - 1) //Left Hill Edge (Lower)
+                            {
+                                var solidStructure = this.Space.CreateAtPosition( this.LeftGrass, Real3(prevPos.X, objectPos.Y + 5.57, -0.001));
+                                var decoDestoryer = this.Space.CreateAtPosition( this.DecoDestroyer, Real3(prevPos.X, objectPos.Y + 5.57, 0.001));
+                                solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                            }
+                            else
+                            {
+                                structure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDeleteOverride");
+                            }
+                            this.PreviousYSpawnedObject = structure;
+                        }
+                        else
+                        {
+                            var prevPos = this.PreviousXSpawnedObject.Transform.Translation;
+                            var prevYPos = this.PreviousYSpawnedObject.Transform.Translation;
+                            
+                            if(k == randomHillYNumber - 1)
+                            {
+                                var structure2 = this.Space.CreateAtPosition( this.Destroyer, Real3(prevPos.X, prevYPos.Y + 5.57, -0.0005));
+                                
+                                if(j == 0) //Top Left Hill Corner
+                                {
+                                    var solidStructure = this.Space.CreateAtPosition( this.HillLeftGrass, Real3(prevPos.X, prevYPos.Y + 5.57, -0.001));
+                                    solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                }
+                                else if (j == randomHillXNumber - 1) //Top Right Hill Corner
+                                {
+                                    var solidStructure = this.Space.CreateAtPosition( this.HillRightGrass, Real3(prevPos.X, prevYPos.Y + 5.57, -0.001));
+                                    solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                }
+                                else //Top Middle Hill
+                                {
+                                    var solidStructure = this.Space.CreateAtPosition( this.BottomGrass, Real3(prevPos.X, prevYPos.Y + 5.57, -0.001));
+                                    solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                }
+                                
+                                this.NewYLocation = this.NewYLocation + 5.57 ;
+                                this.PreviousYSpawnedObject = null;
+                            }
+                            else
+                            {
+                                var structure = this.Space.CreateAtPosition( this.Destroyer, Real3(prevPos.X, prevYPos.Y + 5.57, -0.0005));
+                                
+                                if(j == 0) //Middle Left Hill (Upper)
+                                {
+                                    var solidStructure = this.Space.CreateAtPosition( this.RightGrass, Real3(prevPos.X, prevYPos.Y + 5.57, -0.001));
+                                    solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                    
+                                    var solidStructurePos = solidStructure.Transform.Translation;
+                                    var randomPlatNumberX = this.Rand.RangeInclusiveMax(2, 3);
+                                    var previousPlatform : Cog = null;
+                                    
+                                    for(var x : Integer = 0; x < randomPlatNumberX; ++x) //Left Hill Platform
+                                    {
+                                        if(previousPlatform == null)
+                                        {
+                                            var platform = this.Space.Space.CreateAtPosition(this.PlatformMiddleGrass, Real3(solidStructurePos.X, solidStructurePos.Y, -0.003));
+                                            var decoDestroyer = this.Space.Space.CreateAtPosition(this.DecoDestroyer, Real3(solidStructurePos.X, solidStructurePos.Y, 0.001));
+                                            platform.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                            platform.RemoveComponentByName("DecorateGrassTerrain");
+                                            previousPlatform = platform;
+                                        }
+                                        else
+                                        {
+                                            if (x == randomPlatNumberX - 1)
+                                            {
+                                                var platform2 = this.Space.Space.CreateAtPosition(this.PlatformLeftEndGrass, Real3(previousPlatform.Transform.Translation.X - 5.57, solidStructurePos.Y, -0.003));
+                                                platform2.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                                previousPlatform = null;
+                                            }
+                                            else
+                                            {
+                                                var platform = this.Space.Space.CreateAtPosition(this.PlatformMiddleGrass, Real3(previousPlatform.Transform.Translation.X - 5.57, solidStructurePos.Y, -0.003));
+                                                platform.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                                previousPlatform = platform;
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (j == randomHillXNumber - 1) //Middle Right Hill (Upper)
+                                {
+                                    var solidStructure = this.Space.CreateAtPosition( this.LeftGrass, Real3(prevPos.X, prevYPos.Y + 5.57, -0.001));
+                                    solidStructure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                    
+                                    var solidStructurePos = solidStructure.Transform.Translation;
+                                    var randomPlatNumberX = this.Rand.RangeInclusiveMax(2, 3);
+                                    var previousPlatform : Cog = null;
+                                    
+                                    for(var x : Integer = 0; x < randomPlatNumberX; ++x) //Right Hill Platform
+                                    {
+                                        if(previousPlatform == null)
+                                        {
+                                            var platform = this.Space.Space.CreateAtPosition(this.PlatformMiddleGrass, Real3(solidStructurePos.X, solidStructurePos.Y, -0.003));
+                                            var decoDestroyer = this.Space.Space.CreateAtPosition(this.DecoDestroyer, Real3(solidStructurePos.X, solidStructurePos.Y, 0.001));
+                                            platform.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                            platform.RemoveComponentByName("DecorateGrassTerrain");
+                                            previousPlatform = platform;
+                                        }
+                                        else
+                                        {
+                                            if (x == randomPlatNumberX - 1)
+                                            {
+                                                var platform2 = this.Space.Space.CreateAtPosition(this.PlatformRightEndGrass, Real3(previousPlatform.Transform.Translation.X + 5.57, solidStructurePos.Y, -0.003));
+                                                platform2.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                                previousPlatform = null;
+                                            }
+                                            else
+                                            {
+                                                var platform = this.Space.Space.CreateAtPosition(this.PlatformMiddleGrass, Real3(previousPlatform.Transform.Translation.X + 5.57, solidStructurePos.Y, -0.003));
+                                                platform.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDelete");
+                                                previousPlatform = platform;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    structure.BoxCollider.CollisionGroup = CollisionGroup.Find("NoDeleteOverride");
+                                }
+                                this.PreviousYSpawnedObject = structure;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

@@ -1,0 +1,76 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "PlatformGrass1",
+	},
+	Archetyped = 
+	{
+		string Name = "55e788212509fcf4:PlatformGrass1",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [0, -72.4151, -0.001],
+		Vec3 Scale = [3, 3, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = true,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = false,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "55e7884b52a7b0cc:PlatformGrass1",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool OnTop = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	BoxCollider = 
+	{
+		bool Ghost = false,
+		bool SendsMessages = true,
+		bool Seamless = true,
+		string MaterialName = "4de020863e872da8:DefaultPhysicsMaterial",
+		string SerializedGroupName = "55e4bc625d47ce01:Terrain",
+		Vec3 Offset = [0.008, -0.29, 0],
+		Vec3 Size = [0.9315, 0.375, 0.5],
+	},
+	Grass = 
+	{
+		string Sprite1 = "55e7884b52a7b0cc:PlatformGrass1",
+		string Sprite2 = "55e7884c538068b3:PlatformGrass2",
+		string Sprite3 = "55e7884150f06810:PlatformGrass3",
+	},
+	DecorateGrassTerrain = 
+	{
+		bool CanSpawnFlower = true,
+		int ChanceFlower = 1,
+		int ChanceFlowerNum = 3,
+		bool CanSpawnWeed = true,
+		int ChanceWeed = 1,
+		int ChanceWeedNum = 3,
+		string Flower = "55f4d1a7e9255505:Flower",
+		string Weed = "55f4cfd388fc7f5d:Weed",
+	},
+	DecorateTreeTerrain = 
+	{
+		string TreeBase = "55f6e3859311ab1a:TreeBase",
+		string TreeTrunk = "55f6e3929116fd1c:TreeTrunk",
+		string TreeTop = "55f6e3b89bd08f7a:TreeTop",
+	},
+	MobSpawner = 
+	{
+	},
+},

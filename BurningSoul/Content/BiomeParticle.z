@@ -1,0 +1,28 @@
+class BiomeParticle : ZilchComponent
+{
+    var Rand : Random = Random();
+    
+    var Type : Integer = 0;
+    
+    [Property]
+    var Particle : Archetype = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        var objectPos = this.Owner.Transform.Translation;
+        this.Type = this.Rand.DieRoll(5);
+        
+        if(this.Type == 1)
+        {
+            this.Space.CreateAtPosition(this.Particle, Real3(objectPos.X, objectPos.Y, 0.01));
+        }
+        
+        this.Owner.RemoveComponentByName("BiomeParticle");
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}
